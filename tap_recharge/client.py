@@ -134,7 +134,6 @@ class RechargeClient(object):
             LOGGER.error('Error status_code = {}'.format(response.status_code))
             raise_for_error(response)
         else:
-            resp = response.json()
             return True
 
 

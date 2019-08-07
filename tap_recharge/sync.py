@@ -1,4 +1,3 @@
-from datetime import datetime
 import singer
 from singer import metrics, metadata, Transformer, utils
 

@@ -115,7 +115,7 @@ This tap:
     ```
     Pylint test resulted in the following score:
     ```bash
-    Your code has been rated... FILL IN LATER.
+    Your code has been rated at 9.78/10
     ```
 
     To [check the tap](https://github.com/singer-io/singer-tools#singer-check-tap) and verify working:
@@ -125,7 +125,31 @@ This tap:
     ```
     Check tap resulted in the following:
     ```bash
-    The output is valid. FILL IN LATER.
+    The output is valid.
+    It contained 77 messages for 13 streams.
+
+        13 schema messages
+        29 record messages
+        35 state messages
+
+    Details by stream:
+    +-------------------------+---------+---------+
+    | stream                  | records | schemas |
+    +-------------------------+---------+---------+
+    | shop                    | 1       | 1       |
+    | orders                  | 4       | 1       |
+    | products                | 4       | 1       |
+    | metafields_customer     | 0       | 1       |
+    | addresses               | 4       | 1       |
+    | subscriptions           | 4       | 1       |
+    | charges                 | 8       | 1       |
+    | metafields_store        | 0       | 1       |
+    | collections             | 1       | 1       |
+    | customers               | 1       | 1       |
+    | discounts               | 1       | 1       |
+    | metafields_subscription | 0       | 1       |
+    | onetimes                | 1       | 1       |
+    +-------------------------+---------+---------+
 
     ```
 ---
