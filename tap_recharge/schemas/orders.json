@@ -130,19 +130,29 @@
                 }
               },
               "price": {
-                "type": ["null", "string"]
+                "type": ["null", "number"]
               },
               "properties": {
-                "type": ["null", "object"],
-                "additionalProperties": false,
-                "properties": {
-                  "name": {
-                    "type": ["null", "string"]
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "name": {
+                          "type": ["null", "string"]
+                        },
+                        "value": {
+                          "type": ["null", "string"]
+                        }
+                      }
+                    }
                   },
-                  "value": {
-                    "type": ["null", "string"]
+                  {
+                    "type": "null"
                   }
-                }
+                ]
               },
               "quantity": {
                 "type": ["null", "integer"]
@@ -281,6 +291,9 @@
     "shopify_cart_token": {
       "type": ["null", "string"]
     },
+    "shopify_customer_id": {
+      "type": ["null", "string"]
+    },
     "shopify_id": {
       "type": ["null", "string"]
     },
@@ -294,7 +307,7 @@
       "type": ["null", "string"]
     },
     "subtotal_price": {
-      "type": ["null", "number"]
+      "type": ["null", "string"]
     },
     "tags": {
       "type": ["null", "string"]
@@ -331,7 +344,7 @@
       "type": ["null", "number"]
     },
     "total_price": {
-      "type": ["null", "number"]
+      "type": ["null", "string"]
     },
     "total_refunds": {
       "type": ["null", "number"]

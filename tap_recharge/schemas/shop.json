@@ -2,6 +2,9 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "checkout_logo_url": {
+      "type": ["null", "string"]
+    },
     "created_at": {
       "type": ["null", "string"],
       "format": "date-time"

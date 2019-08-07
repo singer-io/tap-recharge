@@ -172,11 +172,17 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             break # No data results
 
         # Stores parent object ids for children (return ids at end of function)
-        for record in transformed_data:
+        if isinstance(transformed_data, dict):
             rec_ids = {}
             for id_field in id_fields:
-                rec_ids[id_field] = record.get(id_field)
+                rec_ids[id_field] = transformed_data.get(id_field)
                 ids.append(rec_ids)
+        elif isinstance(transformed_data, list):
+            for record in transformed_data:
+                rec_ids = {}
+                for id_field in id_fields:
+                    rec_ids[id_field] = record.get(id_field)
+                    ids.append(rec_ids)
 
         # Process records and get the max_bookmark_value and record_count for the set of records
         max_bookmark_value, record_count = process_records(

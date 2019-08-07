@@ -41,6 +41,9 @@
         }
       }
     },
+    "browser_ip": {
+      "type": ["null", "string"]
+    },
     "client_details": {
       "type": ["null", "object"],
       "additionalProperties": false,
@@ -56,6 +59,9 @@
     "created_at": {
       "type": ["null", "string"],
       "format": "date-time"
+    },
+    "customer_hash": {
+      "type": ["null", "string"]
     },
     "customer_id": {
       "type": ["null", "integer"]
@@ -133,16 +139,26 @@
                 "type": ["null", "string"]
               },
               "properties": {
-                "type": ["null", "object"],
-                "additionalProperties": false,
-                "properties": {
-                  "name": {
-                    "type": ["null", "string"]
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "name": {
+                          "type": ["null", "string"]
+                        },
+                        "value": {
+                          "type": ["null", "string"]
+                        }
+                      }
+                    }
                   },
-                  "value": {
-                    "type": ["null", "string"]
+                  {
+                    "type": "null"
                   }
-                }
+                ]
               },
               "quantity": {
                 "type": ["null", "integer"]
@@ -197,6 +213,13 @@
           "type": "null"
         }
       ]
+    },
+    "processed_at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "processor_name": {
+      "type": ["null", "string"]
     },
     "scheduled_at": {
       "type": ["null", "string"],
@@ -267,7 +290,7 @@
       ]
     },
     "shopify_order_id": {
-      "type": ["null", "integer"]
+      "type": ["null", "string"]
     },
     "status": {
       "type": ["null", "string"]
@@ -276,38 +299,22 @@
       "type": ["null", "string"]
     },
     "subtotal_price": {
-      "type": ["null", "number"]
+      "type": ["null", "string"]
     },
     "tags": {
       "type": ["null", "string"]
     },
     "tax_lines": {
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "code": {
-                "type": ["null", "string"]
-              },
-              "price": {
-                "type": ["null", "string"]
-              },
-              "title": {
-                "type": ["null", "string"]
-              }
-            }
-          }
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "type": ["null", "number"]
+    },
+    "total_discounts": {
+      "type": ["null", "string"]
+    },
+    "total_line_items_price": {
+      "type": ["null", "string"]
     },
     "total_price": {
-      "type": ["null", "number"]
+      "type": ["null", "string"]
     },
     "total_refunds": {
       "type": ["null", "number"]
