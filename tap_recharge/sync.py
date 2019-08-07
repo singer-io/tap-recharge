@@ -453,7 +453,7 @@ def sync(client, catalog, state, start_date):
         'shop': {
             'path': 'shop',
             'params': {},
-            'data_path': 'shop'
+            'data_path': 'shop',
             'id_fields': ['id']
         },
         'subscriptions': {
