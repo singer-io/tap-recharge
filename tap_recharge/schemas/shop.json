@@ -6,8 +6,7 @@
       "type": ["null", "string"]
     },
     "created_at": {
-      "type": ["null", "string"],
-      "format": "date-time"
+      "type": ["null", "string"]
     },
     "currency": {
       "type": ["null", "string"]
@@ -40,8 +39,7 @@
       "type": ["null", "string"]
     },
     "updated_at": {
-      "type": ["null", "string"],
-      "format": "date-time"
+      "type": ["null", "string"]
     }
   }
 }
