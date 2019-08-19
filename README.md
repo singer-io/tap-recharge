@@ -67,7 +67,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[metafields_customer](https://developer.rechargepayments.com/#list-metafields)
+[**metafields_customer**](https://developer.rechargepayments.com/#list-metafields)
 - Endpoint: https://api.rechargeapps.com/metafields
 - Primary keys: id
 - Foreign keys: owner_id
@@ -76,7 +76,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[metafields_store](https://developer.rechargepayments.com/#list-metafields)
+[**metafields_store**](https://developer.rechargepayments.com/#list-metafields)
 - Endpoint: https://api.rechargeapps.com/metafields
 - Primary keys: id
 - Foreign keys: owner_id
@@ -85,7 +85,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[metafields_subscription](https://developer.rechargepayments.com/#list-metafields)
+[**metafields_subscription**](https://developer.rechargepayments.com/#list-metafields)
 - Endpoint: https://api.rechargeapps.com/metafields
 - Primary keys: id
 - Foreign keys: owner_id
