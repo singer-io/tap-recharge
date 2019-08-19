@@ -22,6 +22,120 @@ This tap:
 - Outputs the schema for each resource
 - Incrementally pulls data based on the input state
 
+## Streams
+[**addresses**](https://developer.rechargepayments.com/#list-addresses)
+- Endpoint: https://api.rechargeapps.com/addresses
+- Primary keys: id
+- Foreign keys: customer_id (customers), discount_id (discounts)
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**charges**](https://developer.rechargepayments.com/#list-charges)
+- Endpoint: https://api.rechargeapps.com/charges
+- Primary keys: id
+- Foreign keys: address_id (addresses), customer_id (customers), subscription_id (subscriptions), shopify_product_id, shopify_variant_id, transaction_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**collections**](https://developer.rechargepayments.com/#list-collections-alpha)
+- Endpoint: https://api.rechargeapps.com/collections
+- Primary keys: id
+- Foreign keys: None
+- Replication strategy: Incremental (query all, filter results)
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**customers**](https://developer.rechargepayments.com/#list-customers)
+- Endpoint: https://api.rechargeapps.com/customers
+- Primary keys: id
+- Foreign keys: shopify_customer_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**discounts**](https://developer.rechargepayments.com/#list-discounts)
+- Endpoint: https://api.rechargeapps.com/discounts
+- Primary keys: id
+- Foreign keys: applies_to_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[metafields_customer](https://developer.rechargepayments.com/#list-metafields)
+- Endpoint: https://api.rechargeapps.com/metafields
+- Primary keys: id
+- Foreign keys: owner_id
+- Replication strategy: Incremental (query all, filter results)
+  - Filter: owner_resource = customer
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[metafields_store](https://developer.rechargepayments.com/#list-metafields)
+- Endpoint: https://api.rechargeapps.com/metafields
+- Primary keys: id
+- Foreign keys: owner_id
+- Replication strategy: Incremental (query all, filter results)
+  - Filter: owner_resource = store
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[metafields_subscription](https://developer.rechargepayments.com/#list-metafields)
+- Endpoint: https://api.rechargeapps.com/metafields
+- Primary keys: id
+- Foreign keys: owner_id
+- Replication strategy: Incremental (query all, filter results)
+  - Filter: owner_resource = subscription
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**onetimes**](https://developer.rechargepayments.com/#list-onetimes-alpha)
+- Endpoint: https://api.rechargeapps.com/onetimes
+- Primary keys: id
+- Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), shopify_product_id, shopify_variant_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**orders**](https://developer.rechargepayments.com/#list-orders)
+- Endpoint: https://api.rechargeapps.com/orders
+- Primary keys: id
+- Foreign keys: address_id (addresses), charge_id (charges), customer_id (customers), subscription_id (subscriptions), shopify_product_id, shopify_variant_id, shopify_order_id, shopify_id, shopify_customer_id, transaction_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**products**](https://developer.rechargepayments.com/#list-products-beta)
+- Endpoint: https://api.rechargeapps.com/products
+- Primary keys: id
+- Foreign keys: collection_id (collections), shopify_product_id
+- Replication strategy: Incremental (query all, filter results)
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**shop**](https://developer.rechargepayments.com/#retrieve-shop)
+- Endpoint: https://api.rechargeapps.com/shop
+- Primary keys: id
+- Foreign keys: None
+- Replication strategy: Full table
+- Transformations: None
+
+[**subscriptions**](https://developer.rechargepayments.com/#list-subscriptions)
+- Endpoint: https://api.rechargeapps.com/subscriptions
+- Primary keys: id
+- Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), shopify_product_id, shopify_variant_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
 ## Quick Start
 
 1. Install
