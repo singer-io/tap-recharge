@@ -60,7 +60,8 @@
       "type": ["null", "string"]
     },
     "price": {
-      "type": ["null", "number"]
+      "type": ["null", "number"],
+      "multipleOf": 1e-08
     },
     "product_title": {
       "type": ["null", "string"]

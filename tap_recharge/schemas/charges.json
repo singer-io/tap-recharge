@@ -305,7 +305,8 @@
       "type": ["null", "string"]
     },
     "tax_lines": {
-      "type": ["null", "number"]
+      "type": ["null", "number"],
+      "multipleOf": 1e-08
     },
     "total_discounts": {
       "type": ["null", "string"]
@@ -317,10 +318,12 @@
       "type": ["null", "string"]
     },
     "total_refunds": {
-      "type": ["null", "number"]
+      "type": ["null", "number"],
+      "multipleOf": 1e-08
     },
     "total_tax": {
-      "type": ["null", "number"]
+      "type": ["null", "number"],
+      "multipleOf": 1e-08
     },
     "total_weight": {
       "type": ["null", "integer"]

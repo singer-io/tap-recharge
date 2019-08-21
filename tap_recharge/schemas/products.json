@@ -10,7 +10,8 @@
       "format": "date-time"
     },
     "discount_amount": {
-      "type": ["null", "number"]
+      "type": ["null", "number"],
+      "multipleOf": 1e-08
     },
     "discount_type": {
       "type": ["null", "string"]
