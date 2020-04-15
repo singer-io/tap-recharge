@@ -139,7 +139,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
 
         if bookmark_query_field:
             if bookmark_type == 'datetime':
-                params[bookmark_query_field] = last_datetime
+                params[bookmark_query_field] = last_datetime[0:10] # last_datetime date
             elif bookmark_type == 'integer':
                 params[bookmark_query_field] = last_integer
 
@@ -239,11 +239,6 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                             parent_id,
                             child_total_records))
 
-        # Update the state with the max_bookmark_value for the stream
-        if bookmark_field:
-            write_bookmark(state,
-                           stream_name,
-                           max_bookmark_value)
         # Set to_rec: to record; ending record for the batch
         to_rec = from_rec + record_count - 1
 
@@ -255,6 +250,13 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
         # Pagination: increment the page by 1
         page = page + 1
         from_rec = to_rec + 1
+
+    # Update the state with the max_bookmark_value for the stream after ALL pages
+    #   because the API requested data is NOT sorted
+    if bookmark_field:
+        write_bookmark(state,
+                       stream_name,
+                       max_bookmark_value)
 
     # Return the list of ids to the stream, in case this is a parent stream with children.
     return total_records
