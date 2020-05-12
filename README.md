@@ -240,32 +240,32 @@ This tap:
     Check tap resulted in the following:
     ```bash
     The output is valid.
-    It contained 77 messages for 13 streams.
+    It contained 75 messages for 13 streams.
 
         13 schema messages
-        29 record messages
-        35 state messages
+        24 record messages
+        38 state messages
 
     Details by stream:
     +-------------------------+---------+---------+
     | stream                  | records | schemas |
     +-------------------------+---------+---------+
-    | shop                    | 1       | 1       |
-    | orders                  | 4       | 1       |
-    | products                | 4       | 1       |
-    | metafields_customer     | 0       | 1       |
-    | addresses               | 4       | 1       |
-    | subscriptions           | 4       | 1       |
-    | charges                 | 8       | 1       |
-    | metafields_store        | 0       | 1       |
-    | collections             | 1       | 1       |
-    | customers               | 1       | 1       |
     | discounts               | 1       | 1       |
     | metafields_subscription | 0       | 1       |
-    | onetimes                | 1       | 1       |
+    | addresses               | 4       | 1       |
+    | shop                    | 1       | 1       |
+    | charges                 | 4       | 1       |
+    | products                | 4       | 1       |
+    | onetimes                | 0       | 1       |
+    | orders                  | 4       | 1       |
+    | collections             | 1       | 1       |
+    | metafields_store        | 0       | 1       |
+    | metafields_customer     | 0       | 1       |
+    | subscriptions           | 4       | 1       |
+    | customers               | 1       | 1       |
     +-------------------------+---------+---------+
 
     ```
 ---
 
-Copyright &copy; 2019 Stitch
+Copyright &copy; 2020 Stitch

@@ -180,7 +180,15 @@ class RechargeClient(object):
         if response.status_code != 200:
             raise_for_error(response)
 
-        return response.json()
+        # Log invalid JSON (e.g. unterminated string errors)
+        try:
+            response_json = response.json()
+        except Exception as err:
+            LOGGER.error('{}'.format(err))
+            LOGGER.error('response: {}'.format(response.text))
+            raise Exception(err)
+
+        return response_json
 
     def get(self, path, **kwargs):
         return self.request('GET', path=path, **kwargs)
