@@ -126,7 +126,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
 
     # pagination: loop thru all pages of data
     page = 1
-    pg_size = 200
+    pg_size = 100
     from_rec = 1
     record_count = pg_size # initial value, set with first API call
     total_records = 0

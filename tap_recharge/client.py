@@ -171,7 +171,7 @@ class RechargeClient(object):
             kwargs['headers']['Content-Type'] = 'application/json'
 
         with metrics.http_request_timer(endpoint) as timer:
-            response = self.__session.request(method, url, **kwargs)
+            response = self.__session.request(method, url, stream=True, **kwargs)
             timer.tags[metrics.Tag.http_status_code] = response.status_code
 
         if response.status_code >= 500:
@@ -185,7 +185,7 @@ class RechargeClient(object):
             response_json = response.json()
         except Exception as err:
             LOGGER.error('{}'.format(err))
-            LOGGER.error('response: {}'.format(response.text))
+            LOGGER.error('response content: {}'.format(response.content))
             raise Exception(err)
 
         return response_json
