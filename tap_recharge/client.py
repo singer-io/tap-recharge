@@ -141,7 +141,7 @@ class RechargeClient(object):
                           (Server5xxError, ConnectionError, Server429Error),
                           max_tries=5,
                           factor=2)
-    # Call/rate limit: https://developer.rechargepayments.com/#call-limit
+    # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
     @utils.ratelimit(120, 60)
     def request(self, method, path=None, url=None, **kwargs):
         if not self.__verified:
