@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='tap-recharge',
-      version='1.0.3',
+      version='1.0.4',
       description='Singer.io tap for extracting data from the ReCharge Payments API 2.0',
       author='jeff.huth@bytecode.io',
       classifiers=['Programming Language :: Python :: 3 :: Only'],

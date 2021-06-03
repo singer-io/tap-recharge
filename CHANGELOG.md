@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.4
+  * Update rate limits to match ReCharge's [#8](https://github.com/singer-io/tap-recharge/pull/8)
+
 ## 1.0.3
   * Fix response message being truncated. Change `client.py` to request `stream=True` and error message to include `response.content`. Decrease `sync.py` batch size to `pg_size = 100`.
 
