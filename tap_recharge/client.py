@@ -185,7 +185,6 @@ class RechargeClient(object):
             response_json = response.json()
         except Exception as err:
             LOGGER.error('{}'.format(err))
-            LOGGER.error('response content: {}'.format(response.content))
             raise Exception(err)
 
         return response_json
