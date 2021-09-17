@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
-import json
-import argparse
-import singer
-from singer import metadata, utils
+from singer import get_logger, utils
+
 from tap_recharge.client import RechargeClient
 from tap_recharge.discover import discover
 from tap_recharge.sync import sync
 
-LOGGER = singer.get_logger()
+LOGGER = get_logger()
 
 REQUIRED_CONFIG_KEYS = [
     'access_token',
@@ -21,14 +18,15 @@ def do_discover():
 
     LOGGER.info('Starting discover')
     catalog = discover()
-    json.dump(catalog.to_dict(), sys.stdout, indent=2)
+    catalog.dump()
     LOGGER.info('Finished discover')
 
 
-@singer.utils.handle_top_exception(LOGGER)
+@utils.handle_top_exception(LOGGER)
 def main():
+    """Entrypoint function for tap."""
 
-    parsed_args = singer.utils.parse_args(REQUIRED_CONFIG_KEYS)
+    parsed_args = utils.parse_args(REQUIRED_CONFIG_KEYS)
 
     with RechargeClient(parsed_args.config['access_token'],
                         parsed_args.config['user_agent']) as client:
@@ -43,7 +41,7 @@ def main():
             sync(client=client,
                  catalog=parsed_args.catalog,
                  state=state,
-                 start_date=parsed_args.config['start_date'])
+                 config=parsed_args.config)
 
 if __name__ == '__main__':
     main()
