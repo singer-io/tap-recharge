@@ -1,8 +1,8 @@
 import backoff
 import requests
-from requests.exceptions import ConnectionError
-from singer import metrics, utils
+
 import singer
+from singer import metrics, utils
 
 LOGGER = singer.get_logger()
 
@@ -97,7 +97,7 @@ def raise_for_error(response):
             raise RechargeError(error)
 
 
-class RechargeClient(object):
+class RechargeClient:
     def __init__(self,
                  access_token,
                  user_agent=None):
@@ -138,7 +138,7 @@ class RechargeClient(object):
 
 
     @backoff.on_exception(backoff.expo,
-                          (Server5xxError, ConnectionError, Server429Error),
+                          (Server5xxError, requests.ConnectionError, Server429Error),
                           max_tries=5,
                           factor=2)
     # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
@@ -176,6 +176,9 @@ class RechargeClient(object):
 
         if response.status_code >= 500:
             raise Server5xxError()
+
+        if response.status_code == 429:
+            raise Server429Error()
 
         if response.status_code != 200:
             raise_for_error(response)
