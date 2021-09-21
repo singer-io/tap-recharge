@@ -14,6 +14,8 @@ from tap_recharge.client import RechargeClient
 
 LOGGER = singer.get_logger()
 
+MAX_PAGE_LIMIT = 250
+
 
 class BaseStream:
     """
@@ -158,7 +160,62 @@ class FullTableStream(BaseStream):
         return state
 
 
-class Addresses(IncrementalStream):
+class PageBasedPagingStream(IncrementalStream):
+    """
+    A generic page based pagination implementation for the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/?python#page-based-pagination
+    """
+
+    def get_records(self,
+                    bookmark_datetime: datetime = None,
+                    is_parent: bool = False) -> Iterator[list]:
+        page = 1
+        self.params.update({
+            'limit': MAX_PAGE_LIMIT,
+            'page': page
+            })
+        result_size = MAX_PAGE_LIMIT
+
+        while result_size == MAX_PAGE_LIMIT:
+            response = self.client.get(self.path, params=self.params)
+
+            result_size = len(response[0].get(self.data_key))
+            page += 1
+            self.params.update({'page': page})
+
+            yield from response[0].get(self.data_key)
+
+
+class CursorPagingStream(IncrementalStream):
+    """
+    A generic cursor pagination implemantation for the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/?python#cursor-pagination
+    """
+
+    def get_records(self,
+                    bookmark_datetime: datetime = None,
+                    is_parent: bool = False) -> Iterator[list]:
+        self.params.update({'limit': MAX_PAGE_LIMIT})
+        paging = True
+        path = self.path
+        url = None
+
+        while paging:
+            records, links = self.client.get(path, url=url, params=self.params)
+
+            if links.get('next'):
+                path = None
+                self.params = None
+                url = links.get('next', {}).get('url')
+            else:
+                paging = False
+
+            yield from records.get(self.data_key)
+
+
+class Addresses(CursorPagingStream):
     """
     Retrieves addresses from the Recharge API.
 
@@ -172,15 +229,8 @@ class Addresses(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'addresses'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Charges(IncrementalStream):
+class Charges(CursorPagingStream):
     """
     Retrieves charges from the Recharge API.
 
@@ -194,15 +244,8 @@ class Charges(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'charges'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Collections(IncrementalStream):
+class Collections(CursorPagingStream):
     """
     Retrieves collections from the Recharge API.
 
@@ -216,15 +259,8 @@ class Collections(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'collections'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Customers(IncrementalStream):
+class Customers(CursorPagingStream):
     """
     Retrieves customers from the Recharge API.
 
@@ -238,15 +274,8 @@ class Customers(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'customers'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Discounts(IncrementalStream):
+class Discounts(CursorPagingStream):
     """
     Retrieves discounts from the Recharge API.
 
@@ -260,15 +289,8 @@ class Discounts(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'discounts'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class MetafieldsStore(IncrementalStream):
+class MetafieldsStore(PageBasedPagingStream):
     """
     Retrieves store metafields from the Recharge API.
 
@@ -285,15 +307,8 @@ class MetafieldsStore(IncrementalStream):
         }
     data_key = 'metafields'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class MetafieldsCustomer(IncrementalStream):
+class MetafieldsCustomer(PageBasedPagingStream):
     """
     Retrieves customer metafields from the Recharge API.
 
@@ -310,15 +325,8 @@ class MetafieldsCustomer(IncrementalStream):
         }
     data_key = 'metafields'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class MetafieldsSubscription(IncrementalStream):
+class MetafieldsSubscription(PageBasedPagingStream):
     """
     Retrieves subscription metafields from the Recharge API.
 
@@ -335,15 +343,8 @@ class MetafieldsSubscription(IncrementalStream):
         }
     data_key = 'metafields'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Onetimes(IncrementalStream):
+class Onetimes(CursorPagingStream):
     """
     Retrieves non-recurring line items on queued orders from the Recharge API.
 
@@ -357,15 +358,8 @@ class Onetimes(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'onetimes'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Orders(IncrementalStream):
+class Orders(CursorPagingStream):
     """
     Retrieves orders from the Recharge API.
 
@@ -379,15 +373,8 @@ class Orders(IncrementalStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'orders'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
 
-        yield from records.get(self.data_key)
-
-
-class Products(IncrementalStream):
+class Products(CursorPagingStream):
     """
     Retrieves products from the Recharge API.
 
@@ -400,13 +387,6 @@ class Products(IncrementalStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'products'
-
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
-
-        yield from records.get(self.data_key)
 
 
 class Shop(FullTableStream):
@@ -426,12 +406,12 @@ class Shop(FullTableStream):
     def get_records(self,
                     bookmark_datetime: datetime = None,
                     is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
+        response = self.client.get(self.path, params=self.params)
 
-        return [records.get(self.data_key)]
+        return [response[0].get(self.data_key)]
 
 
-class Subscriptions(IncrementalStream):
+class Subscriptions(CursorPagingStream):
     """
     Retrieves subscriptions from the Recharge API.
 
@@ -444,13 +424,6 @@ class Subscriptions(IncrementalStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'subscriptions'
-
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        records = self.client.get(self.path, params=self.params)
-
-        yield from records.get(self.data_key)
 
 
 STREAMS = {
