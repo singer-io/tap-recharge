@@ -190,7 +190,7 @@ class RechargeClient:
             LOGGER.error('{}'.format(err))
             raise Exception(err)
 
-        return response_json
+        return (response_json, response.links)
 
     def get(self, path, **kwargs):
         return self.request('GET', path=path, **kwargs)
