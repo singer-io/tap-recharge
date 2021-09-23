@@ -36,9 +36,10 @@ class BaseStream:
     def __init__(self, client: RechargeClient):
         self.client = client
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> list:
+    def get_records(
+            self,
+            bookmark_datetime: datetime = None,
+            is_parent: bool = False) -> list:
         """
         Returns a list of records for that stream.
 
@@ -75,7 +76,8 @@ class IncrementalStream(BaseStream):
     replication_method = 'INCREMENTAL'
 
     # pylint: disable=too-many-arguments
-    def sync(self,
+    def sync(
+            self,
             state: dict,
             stream_schema: dict,
             stream_metadata: dict,
@@ -91,10 +93,11 @@ class IncrementalStream(BaseStream):
         :param transformer: A singer Transformer object
         :return: State data in the form of a dictionary
         """
-        start_date = singer.get_bookmark(state,
-                                        self.tap_stream_id,
-                                        self.replication_key,
-                                        config['start_date'])
+        start_date = singer.get_bookmark(
+            state,
+            self.tap_stream_id,
+            self.replication_key,
+            config['start_date'])
         bookmark_datetime = utils.strptime_to_utc(start_date)
         max_datetime = bookmark_datetime
 
@@ -111,10 +114,11 @@ class IncrementalStream(BaseStream):
 
             bookmark_date = utils.strftime(max_datetime)
 
-        state = singer.write_bookmark(state,
-                                    self.tap_stream_id,
-                                    self.replication_key,
-                                    bookmark_date)
+        state = singer.write_bookmark(
+            state,
+            self.tap_stream_id,
+            self.replication_key,
+            bookmark_date)
 
         singer.write_state(state)
 
@@ -131,7 +135,8 @@ class FullTableStream(BaseStream):
     replication_method = 'FULL_TABLE'
 
     # pylint: disable=too-many-arguments
-    def sync(self,
+    def sync(
+            self,
             state: dict,
             stream_schema: dict,
             stream_metadata: dict,
@@ -149,9 +154,10 @@ class FullTableStream(BaseStream):
         """
         with metrics.record_counter(self.tap_stream_id) as counter:
             for record in self.get_records(config):
-                transformed_record = transformer.transform(record,
-                                                            stream_schema,
-                                                            stream_metadata)
+                transformed_record = transformer.transform(
+                    record,
+                    stream_schema,
+                    stream_metadata)
                 singer.write_record(self.tap_stream_id, transformed_record)
                 counter.increment()
 
@@ -167,9 +173,10 @@ class PageBasedPagingStream(IncrementalStream):
     Docs: https://developer.rechargepayments.com/?python#page-based-pagination
     """
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
+    def get_records(
+            self,
+            bookmark_datetime: datetime = None,
+            is_parent: bool = False) -> Iterator[list]:
         page = 1
         self.params.update({
             'limit': MAX_PAGE_LIMIT,
@@ -178,13 +185,13 @@ class PageBasedPagingStream(IncrementalStream):
         result_size = MAX_PAGE_LIMIT
 
         while result_size == MAX_PAGE_LIMIT:
-            response = self.client.get(self.path, params=self.params)
+            records, _ = self.client.get(self.path, params=self.params)
 
-            result_size = len(response[0].get(self.data_key))
+            result_size = len(records.get(self.data_key))
             page += 1
             self.params.update({'page': page})
 
-            yield from response[0].get(self.data_key)
+            yield from records.get(self.data_key)
 
 
 class CursorPagingStream(IncrementalStream):
@@ -194,9 +201,10 @@ class CursorPagingStream(IncrementalStream):
     Docs: https://developer.rechargepayments.com/?python#cursor-pagination
     """
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
+    def get_records(
+            self,
+            bookmark_datetime: datetime = None,
+            is_parent: bool = False) -> Iterator[list]:
         self.params.update({'limit': MAX_PAGE_LIMIT})
         paging = True
         path = self.path
@@ -403,12 +411,13 @@ class Shop(FullTableStream):
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'shop'
 
-    def get_records(self,
-                    bookmark_datetime: datetime = None,
-                    is_parent: bool = False) -> Iterator[list]:
-        response = self.client.get(self.path, params=self.params)
+    def get_records(
+            self,
+            bookmark_datetime: datetime = None,
+            is_parent: bool = False) -> Iterator[list]:
+        records, _ = self.client.get(self.path, params=self.params)
 
-        return [response[0].get(self.data_key)]
+        return [records.get(self.data_key)]
 
 
 class Subscriptions(CursorPagingStream):
