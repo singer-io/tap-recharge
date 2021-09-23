@@ -6,7 +6,8 @@ from tap_recharge.streams import STREAMS
 
 LOGGER = singer.get_logger()
 
-def sync(client: RechargeClient,
+def sync(
+        client: RechargeClient,
         config: dict,
         state: dict,
         catalog: Catalog) -> dict:
@@ -31,7 +32,12 @@ def sync(client: RechargeClient,
                 stream.replication_key
             )
 
-            state = stream_obj.sync(state, stream_schema, stream_metadata, config, transformer)
+            state = stream_obj.sync(
+                state,
+                stream_schema,
+                stream_metadata,
+                config,
+                transformer)
             singer.write_state(state)
 
     state = singer.set_currently_syncing(state, None)

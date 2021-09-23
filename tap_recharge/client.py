@@ -98,9 +98,10 @@ def raise_for_error(response):
 
 
 class RechargeClient:
-    def __init__(self,
-                 access_token,
-                 user_agent=None):
+    def __init__(
+            self,
+            access_token,
+            user_agent=None):
         self.__access_token = access_token
         self.__user_agent = user_agent
         self.__session = requests.Session()
@@ -114,10 +115,11 @@ class RechargeClient:
     def __exit__(self, exception_type, exception_value, traceback):
         self.__session.close()
 
-    @backoff.on_exception(backoff.expo,
-                          Server5xxError,
-                          max_tries=5,
-                          factor=2)
+    @backoff.on_exception(
+        backoff.expo,
+        Server5xxError,
+        max_tries=5,
+        factor=2)
     def check_access_token(self):
         if self.__access_token is None:
             raise Exception('Error: Missing access_token.')
@@ -137,10 +139,11 @@ class RechargeClient:
             return True
 
 
-    @backoff.on_exception(backoff.expo,
-                          (Server5xxError, requests.ConnectionError, Server429Error),
-                          max_tries=5,
-                          factor=2)
+    @backoff.on_exception(
+        backoff.expo,
+        (Server5xxError, requests.ConnectionError, Server429Error),
+        max_tries=5,
+        factor=2)
     # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
     @utils.ratelimit(120, 60)
     def request(self, method, path=None, url=None, **kwargs):
@@ -190,7 +193,7 @@ class RechargeClient:
             LOGGER.error('{}'.format(err))
             raise Exception(err)
 
-        return (response_json, response.links)
+        return response_json, response.links
 
     def get(self, path, **kwargs):
         return self.request('GET', path=path, **kwargs)

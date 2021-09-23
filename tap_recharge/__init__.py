@@ -28,8 +28,9 @@ def main():
 
     parsed_args = utils.parse_args(REQUIRED_CONFIG_KEYS)
 
-    with RechargeClient(parsed_args.config['access_token'],
-                        parsed_args.config['user_agent']) as client:
+    with RechargeClient(
+        parsed_args.config['access_token'],
+        parsed_args.config['user_agent']) as client:
 
         state = {}
         if parsed_args.state:
@@ -38,10 +39,11 @@ def main():
         if parsed_args.discover:
             do_discover()
         elif parsed_args.catalog:
-            sync(client=client,
-                 catalog=parsed_args.catalog,
-                 state=state,
-                 config=parsed_args.config)
+            sync(
+                client=client,
+                catalog=parsed_args.catalog,
+                state=state,
+                config=parsed_args.config)
 
 if __name__ == '__main__':
     main()
