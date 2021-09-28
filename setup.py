@@ -11,7 +11,7 @@ setup(name='tap-recharge',
       install_requires=[
           'backoff==1.8.0',
           'requests==2.23.0',
-          'singer-python==5.9.0'
+          'singer-python==5.10.0'
       ],
       entry_points='''
           [console_scripts]
@@ -21,5 +21,10 @@ setup(name='tap-recharge',
       package_data={
           'tap_recharge': [
               'schemas/*.json'
+          ]
+      },
+      extras_require={
+          'dev': [
+              'pylint'
           ]
       })
