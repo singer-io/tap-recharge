@@ -352,7 +352,7 @@ class MetafieldsSubscription(PageBasedPagingStream):
     data_key = 'metafields'
 
 
-class Onetimes(CursorPagingStream):
+class Onetimes(PageBasedPagingStream):
     """
     Retrieves non-recurring line items on queued orders from the Recharge API.
 
