@@ -51,6 +51,7 @@ class DiscoveryTest(RechargeBaseTest):
                 expected_primary_keys = self.expected_primary_keys()[stream]
                 expected_replication_keys = self.expected_replication_keys()[stream]
                 expected_automatic_fields = expected_primary_keys | expected_replication_keys
+                expected_replication_method = self.expected_replication_method()[stream]
 
                 # collecting actual values...
                 schema_and_metadata = menagerie.get_annotated_schema(conn_id, catalog['stream_id'])
@@ -60,6 +61,12 @@ class DiscoveryTest(RechargeBaseTest):
                     stream_properties[0].get(
                         "metadata", {self.PRIMARY_KEYS: []}).get(self.PRIMARY_KEYS, [])
                 )
+                actual_replication_keys = set(
+                    stream_properties[0].get(
+                        "metadata", {self.REPLICATION_KEYS: []}).get(self.REPLICATION_KEYS, [])
+                )
+                actual_replication_method = stream_properties[0].get(
+                    "metadata", {self.REPLICATION_METHOD: None}).get(self.REPLICATION_METHOD)
                 actual_automatic_fields = set(
                     item.get("breadcrumb", ["properties", None])[1] for item in metadata
                     if item.get("metadata").get("inclusion") == "automatic"
@@ -73,6 +80,22 @@ class DiscoveryTest(RechargeBaseTest):
                 self.assertTrue(len(stream_properties) == 1,
                                 msg="There is NOT only one top level breadcrumb for {}".format(stream) + \
                                 "\nstream_properties | {}".format(stream_properties))
+
+                # verify that if there is a replication key we are doing INCREMENTAL otherwise FULL
+                if actual_replication_keys:
+                    self.assertTrue(actual_replication_method == self.INCREMENTAL,
+                                    msg="Expected INCREMENTAL replication "
+                                        "since there is a replication key")
+                else:
+                    self.assertTrue(actual_replication_method == self.FULL_TABLE,
+                                    msg="Expected FULL replication "
+                                        "since there is no replication key")
+
+                # verify the actual replication matches our expected replication method
+                self.assertEqual(expected_replication_method,
+                                 actual_replication_method,
+                                 msg="The actual replication method {} doesn't match the expected {}".format(
+                                    actual_replication_method, expected_replication_method))
 
                 # verify primary key(s) match expectations
                 self.assertSetEqual(expected_primary_keys, actual_primary_keys)
