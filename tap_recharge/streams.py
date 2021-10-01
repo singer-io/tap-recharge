@@ -268,7 +268,7 @@ class Collections(CursorPagingStream):
     data_key = 'collections'
 
 
-class Customers(CursorPagingStream):
+class Customers(PageBasedPagingStream):
     """
     Retrieves customers from the Recharge API.
 
