@@ -17,7 +17,13 @@ class RechargePaginationTest(RechargeBaseTest):
         conn_id = connections.ensure_connection(self)
 
         # Checking pagination for streams with enough data
-        expected_streams = ["metafields_subscription", "onetimes"]
+        expected_streams = [
+            "addresses",
+            "customers",
+            "discounts",
+            "metafields_subscription",
+            "onetimes",
+            ]
         found_catalogs = self.run_and_verify_check_mode(conn_id)
 
         # table and field selection
