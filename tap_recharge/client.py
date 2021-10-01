@@ -82,8 +82,8 @@ def raise_for_error(response):
                 return
             response = response.json()
             if ('error' in response) or ('errorCode' in response):
-                message = '%s: %s' % (response.get('error', str(error)),
-                                      response.get('message', 'Unknown Error'))
+                message = f"{response.get('error', str(error))}: \
+                    {response.get('message', 'Unknown Error')}"
                 error_code = response.get('status')
                 ex = get_exception_for_error_code(error_code)
                 if response.status_code == 401 and 'Expired access token' in message:
@@ -133,7 +133,7 @@ class RechargeClient:
             url='https://api.rechargeapps.com',
             headers=headers)
         if response.status_code != 200:
-            LOGGER.error('Error status_code = {}'.format(response.status_code))
+            LOGGER.error('Error status_code = %s', response.status_code)
             raise_for_error(response)
         else:
             return True
@@ -190,7 +190,7 @@ class RechargeClient:
         try:
             response_json = response.json()
         except Exception as err:
-            LOGGER.error('{}'.format(err))
+            LOGGER.error('%s', err)
             raise Exception(err)
 
         return response_json, response.links

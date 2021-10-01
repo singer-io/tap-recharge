@@ -15,7 +15,7 @@ jobs:
           name: 'pylint'
           command: |
             source /usr/local/share/virtualenvs/tap-recharge/bin/activate
-            pylint tap_recharge --disable 'missing-module-docstring,missing-function-docstring,missing-class-docstring,no-else-raise,raise-missing-from,inconsistent-return-statements,logging-format-interpolation'
+            pylint tap_recharge --disable 'missing-module-docstring,missing-function-docstring,missing-class-docstring,no-else-raise,raise-missing-from,inconsistent-return-statements'
       - run:
           when: always
           name: 'Integration Tests'
