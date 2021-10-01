@@ -190,7 +190,7 @@ class RechargeClient:
         try:
             response_json = response.json()
         except Exception as err:
-            LOGGER.error('%s', err)
+            LOGGER.error(err)
             raise Exception(err)
 
         return response_json, response.links
