@@ -406,16 +406,13 @@ class Shop(FullTableStream):
     tap_stream_id = 'shop'
     key_properties = ['id']
     path = 'shop'
-    replication_key = 'updated_at'
-    valid_replication_keys = ['updated_at']
-    params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'shop'
 
     def get_records(
             self,
             bookmark_datetime: datetime = None,
             is_parent: bool = False) -> Iterator[list]:
-        records, _ = self.client.get(self.path, params=self.params)
+        records, _ = self.client.get(self.path)
 
         return [records.get(self.data_key)]
 
