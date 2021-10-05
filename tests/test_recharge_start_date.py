@@ -16,11 +16,12 @@ class RechargeStartDateTest(RechargeBaseTest):
         """Instantiate start date according to the desired data set and run the test"""
 
         self.start_date_1 = self.get_properties().get('start_date')
-        self.start_date_2 = self.timedelta_formatted(self.start_date_1, days=3)
+        self.start_date_2 = self.timedelta_formatted(self.start_date_1, days=31)
 
         self.start_date = self.start_date_1
 
         expected_streams = self.expected_streams()
+        expected_replication_methods = self.expected_replication_method()
 
         ##########################################################################
         ### First Sync
@@ -68,6 +69,8 @@ class RechargeStartDateTest(RechargeBaseTest):
         synced_records_2 = runner.get_records_from_target_output()
 
         for stream in expected_streams:
+            expected_replication_method = expected_replication_methods[stream]
+
             with self.subTest(stream=stream):
                 # expected values
                 expected_primary_keys = self.expected_primary_keys()[stream]
@@ -84,9 +87,24 @@ class RechargeStartDateTest(RechargeBaseTest):
                 primary_keys_sync_1 = set(primary_keys_list_1)
                 primary_keys_sync_2 = set(primary_keys_list_2)
 
-                # Verify that the 2nd sync with a later start date replicates the same number of
-                # records as the 1st sync.
-                self.assertEqual(record_count_sync_2, record_count_sync_1)
+                if expected_replication_method == self.INCREMENTAL:
+                    # Verify that the 1st sync with an earlier start date replicates
+                    # a greater number of records as the 2nd sync.
+                    self.assertGreater(record_count_sync_1, record_count_sync_2,
+                                       msg="The 1st sync does not contain a greater number of records than the 2nd sync")
 
-                # Verify by primary key the same records are replicated in the 1st and 2nd syncs
-                self.assertSetEqual(primary_keys_sync_1, primary_keys_sync_2)
+                    # Verify by primary key the records replicated in the 2nd sync are part of the 1st sync
+                    self.assertTrue(primary_keys_sync_2.issubset(primary_keys_sync_1),
+                                    msg="Records in the 2nd sync are not a subset of the 1st sync")
+                elif expected_replication_method == self.FULL_TABLE:
+                    # Verify that the 1st sync with an earlier start date replicates
+                    # an equal number of records as the 2nd sync.
+                    self.assertEqual(record_count_sync_1, record_count_sync_2,
+                                     msg="The 1st sync does not contain an equal number of records as in the 2nd sync")
+
+                    # Verify by primary key the same records are replicated in the 1st and 2nd syncs
+                    self.assertSetEqual(primary_keys_sync_1, primary_keys_sync_2)
+                else:
+                    raise NotImplementedError(
+                        "INVALID EXPECTATIONS\t\tSTREAM: {} REPLICATION_METHOD: {}".format(stream, expected_replication_method)
+                    )
