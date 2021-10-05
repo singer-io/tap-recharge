@@ -100,6 +100,12 @@ class DiscoveryTest(RechargeBaseTest):
                 # verify primary key(s) match expectations
                 self.assertSetEqual(expected_primary_keys, actual_primary_keys)
 
+                # verify replication key(s) match expectations
+                self.assertSetEqual(expected_replication_keys,
+                                    actual_replication_keys,
+                                    msg="The actual replications keys ({}) do not match the expected ({})".format(
+                                        actual_replication_keys, expected_replication_keys))
+
                 # verify that primary keys and replication keys
                 # are given the inclusion of automatic in metadata.
                 self.assertSetEqual(expected_automatic_fields, actual_automatic_fields)
