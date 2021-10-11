@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+  * Refactored the tap with a class based approach [#13](https://github.com/stitchdata/sources-utils/pull/13) / [#14](https://github.com/singer-io/tap-recharge/pull/14)
+  * Add integration tests [#14](https://github.com/stitchdata/sources-utils/pull/14)
+
 ## 1.0.4
   * Update rate limits to match ReCharge's [#8](https://github.com/singer-io/tap-recharge/pull/8)
 
