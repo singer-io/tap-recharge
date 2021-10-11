@@ -14,10 +14,10 @@ This tap:
   - [Customers](https://developer.rechargepayments.com/#list-customers)
   - [Discounts](https://developer.rechargepayments.com/#list-discounts)
   - [Metafields for Store, Customers, Subscriptions](https://developer.rechargepayments.com/#list-metafields)
-  - [One-time Products](https://developer.rechargepayments.com/#list-onetimes-alpha)
+  - [One-time Products](https://developer.rechargepayments.com/#list-onetimes)
   - [Orders](https://developer.rechargepayments.com/#list-orders)
-  - [Products](https://developer.rechargepayments.com/#list-products-beta)
-  - [Shop](https://developer.rechargepayments.com/#retrieve-shop)
+  - [Products](https://developer.rechargepayments.com/#list-products)
+  - [Shop](https://developer.rechargepayments.com/#retrieve-a-shop)
   - [Subscriptions](https://developer.rechargepayments.com/#list-subscriptions)
 - Outputs the schema for each resource
 - Incrementally pulls data based on the input state
@@ -94,7 +94,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**onetimes**](https://developer.rechargepayments.com/#list-onetimes-alpha)
+[**onetimes**](https://developer.rechargepayments.com/#list-onetimes)
 - Endpoint: https://api.rechargeapps.com/onetimes
 - Primary keys: id
 - Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), shopify_product_id, shopify_variant_id
@@ -112,7 +112,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**products**](https://developer.rechargepayments.com/#list-products-beta)
+[**products**](https://developer.rechargepayments.com/#list-products)
 - Endpoint: https://api.rechargeapps.com/products
 - Primary keys: id
 - Foreign keys: collection_id (collections), shopify_product_id
@@ -120,7 +120,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**shop**](https://developer.rechargepayments.com/#retrieve-shop)
+[**shop**](https://developer.rechargepayments.com/#retrieve-a-shop)
 - Endpoint: https://api.rechargeapps.com/shop
 - Primary keys: id
 - Foreign keys: None

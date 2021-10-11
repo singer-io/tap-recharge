@@ -1,20 +1,24 @@
-from singer.catalog import Catalog, CatalogEntry, Schema
-from tap_recharge.schema import get_schemas, STREAMS
+from singer.catalog import Catalog
+from tap_recharge.schema import get_schemas
+
 
 def discover():
+    """
+    Constructs a singer Catalog object based on the schemas and metadata.
+    """
     schemas, field_metadata = get_schemas()
-    catalog = Catalog([])
+    streams = []
 
-    for stream_name, schema_dict in schemas.items():
-        schema = Schema.from_dict(schema_dict)
-        mdata = field_metadata[stream_name]
+    for schema_name, schema in schemas.items():
+        schema_meta = field_metadata[schema_name]
 
-        catalog.streams.append(CatalogEntry(
-            stream=stream_name,
-            tap_stream_id=stream_name,
-            key_properties=STREAMS[stream_name]['key_properties'],
-            schema=schema,
-            metadata=mdata
-        ))
+        catalog_entry = {
+            'stream': schema_name,
+            'tap_stream_id': schema_name,
+            'schema': schema,
+            'metadata': schema_meta
+        }
 
-    return catalog
+        streams.append(catalog_entry)
+
+    return Catalog.from_dict({'streams': streams})

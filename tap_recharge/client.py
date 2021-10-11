@@ -1,8 +1,8 @@
 import backoff
 import requests
-from requests.exceptions import ConnectionError
-from singer import metrics, utils
+
 import singer
+from singer import metrics, utils
 
 LOGGER = singer.get_logger()
 
@@ -82,8 +82,8 @@ def raise_for_error(response):
                 return
             response = response.json()
             if ('error' in response) or ('errorCode' in response):
-                message = '%s: %s' % (response.get('error', str(error)),
-                                      response.get('message', 'Unknown Error'))
+                message = f"{response.get('error', str(error))}: \
+                    {response.get('message', 'Unknown Error')}"
                 error_code = response.get('status')
                 ex = get_exception_for_error_code(error_code)
                 if response.status_code == 401 and 'Expired access token' in message:
@@ -97,10 +97,11 @@ def raise_for_error(response):
             raise RechargeError(error)
 
 
-class RechargeClient(object):
-    def __init__(self,
-                 access_token,
-                 user_agent=None):
+class RechargeClient:
+    def __init__(
+            self,
+            access_token,
+            user_agent=None):
         self.__access_token = access_token
         self.__user_agent = user_agent
         self.__session = requests.Session()
@@ -114,10 +115,11 @@ class RechargeClient(object):
     def __exit__(self, exception_type, exception_value, traceback):
         self.__session.close()
 
-    @backoff.on_exception(backoff.expo,
-                          Server5xxError,
-                          max_tries=5,
-                          factor=2)
+    @backoff.on_exception(
+        backoff.expo,
+        Server5xxError,
+        max_tries=5,
+        factor=2)
     def check_access_token(self):
         if self.__access_token is None:
             raise Exception('Error: Missing access_token.')
@@ -131,16 +133,17 @@ class RechargeClient(object):
             url='https://api.rechargeapps.com',
             headers=headers)
         if response.status_code != 200:
-            LOGGER.error('Error status_code = {}'.format(response.status_code))
+            LOGGER.error('Error status_code = %s', response.status_code)
             raise_for_error(response)
         else:
             return True
 
 
-    @backoff.on_exception(backoff.expo,
-                          (Server5xxError, ConnectionError, Server429Error),
-                          max_tries=5,
-                          factor=2)
+    @backoff.on_exception(
+        backoff.expo,
+        (Server5xxError, requests.ConnectionError, Server429Error),
+        max_tries=5,
+        factor=2)
     # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
     @utils.ratelimit(120, 60)
     def request(self, method, path=None, url=None, **kwargs):
@@ -177,6 +180,9 @@ class RechargeClient(object):
         if response.status_code >= 500:
             raise Server5xxError()
 
+        if response.status_code == 429:
+            raise Server429Error()
+
         if response.status_code != 200:
             raise_for_error(response)
 
@@ -184,10 +190,10 @@ class RechargeClient(object):
         try:
             response_json = response.json()
         except Exception as err:
-            LOGGER.error('{}'.format(err))
+            LOGGER.error(err)
             raise Exception(err)
 
-        return response_json
+        return response_json, response.links
 
     def get(self, path, **kwargs):
         return self.request('GET', path=path, **kwargs)
