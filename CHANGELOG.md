@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1
+  * Fix bookmark access [#17](https://github.com/stitchdata/sources-utils/pull/17)
+
 ## 1.1.0
   * Refactored the tap with a class based approach [#13](https://github.com/stitchdata/sources-utils/pull/13) / [#14](https://github.com/singer-io/tap-recharge/pull/14)
   * Add integration tests [#14](https://github.com/stitchdata/sources-utils/pull/14)
