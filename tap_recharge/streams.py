@@ -7,7 +7,7 @@ import datetime
 from typing import Iterator
 
 import singer
-from singer import Transformer, utils, metrics
+from singer import Transformer, utils, metrics, bookmarks
 
 from tap_recharge.client import RechargeClient
 
@@ -16,6 +16,37 @@ LOGGER = singer.get_logger()
 
 MAX_PAGE_LIMIT = 250
 
+
+def get_recharge_bookmark(
+        state: dict,
+        tap_stream_id: str,
+        default: str = None) -> str:
+    """
+    Retrieves the bookmarks for a stream from the state dict.
+
+    :param state: The dict of the current state.
+    :param tap_stream_id: The stream for which to get the bookmark.
+    :return: Bookmark datetime string for stream.
+    """
+    return state.get('bookmarks', {}).get(tap_stream_id, default)
+
+def write_recharge_bookmark(
+        state: dict,
+        tap_stream_id: str,
+        value: str) -> dict:
+    """
+    Writes bookmark for a stream in the taps original structure:
+        { "bookmarks": { "tap_stream_id": "value"} }
+
+    :param state: The dict of the current state.
+    :param tap_stream_id: The stream for which to write the bookmark.
+    :param value: The bookmark datetime string.
+    :return: New state dict.
+    """
+    state = bookmarks.ensure_bookmark_path(state, ['bookmarks'])
+    state['bookmarks'][tap_stream_id] = value
+
+    return state
 
 class BaseStream:
     """
@@ -93,10 +124,9 @@ class IncrementalStream(BaseStream):
         :param transformer: A singer Transformer object
         :return: State data in the form of a dictionary
         """
-        start_date = singer.get_bookmark(
+        start_date = get_recharge_bookmark(
             state,
             self.tap_stream_id,
-            self.replication_key,
             config['start_date'])
         bookmark_datetime = utils.strptime_to_utc(start_date)
         max_datetime = bookmark_datetime
@@ -114,10 +144,9 @@ class IncrementalStream(BaseStream):
 
             bookmark_date = utils.strftime(max_datetime)
 
-        state = singer.write_bookmark(
+        state = write_recharge_bookmark(
             state,
             self.tap_stream_id,
-            self.replication_key,
             bookmark_date)
 
         singer.write_state(state)
