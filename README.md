@@ -167,11 +167,12 @@ This tap:
     {
         "access_token": "YOUR_ACCESS_TOKEN",
         "start_date": "2019-01-01T00:00:00Z",
-        "user_agent": "tap-recharge <api_user_email@your_company.com>"
+        "user_agent": "tap-recharge <api_user_email@your_company.com>",
+        "request_timeout": 300
     }
     ```
     
-    Optionally, also create a `state.json` file. `currently_syncing` is an optional attribute used for identifying the last object to be synced in case the job is interrupted mid-stream. The next run would begin where the last job left off.
+    Optionally, also create a `state.json` file. `currently_syncing` is an optional attribute used for identifying the last object to be synced in case the job is interrupted mid-stream. The next run would begin where the last job left off. The `request_timeout` is an optional paramater to set timeout for requests. Default: 300 seconds
 
     ```json
     {
