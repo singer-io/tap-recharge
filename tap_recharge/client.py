@@ -116,10 +116,10 @@ class RechargeClient:
             request_timeout = REQUEST_TIMEOUT
         self.request_timeout = request_timeout
 
-    # Backoff the request for 5 times when Timeout error occurs
+    # Backoff the request for 5 times when Timeout or Connection error occurs
     @backoff.on_exception(
         backoff.expo,
-        Timeout,
+        (Timeout, requests.ConnectionError),
         max_tries=5,
         factor=2)
     def __enter__(self):

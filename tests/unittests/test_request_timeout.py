@@ -2,7 +2,7 @@ from tap_recharge.client import RechargeClient
 import unittest
 from unittest import mock
 from unittest.case import TestCase
-from requests.exceptions import Timeout
+from requests.exceptions import Timeout, ConnectionError
 
 class TestBackoffError(unittest.TestCase):
     '''
@@ -31,7 +31,7 @@ class TestBackoffError(unittest.TestCase):
             "access_token": "dummy_at",
             "user_agent": "dummy_ua"
         }
-        # initialize 'LinkedinClient'
+        # initialize 'RechargeClient'
         try:
             with RechargeClient(
                 config['access_token'],
@@ -40,7 +40,29 @@ class TestBackoffError(unittest.TestCase):
                 pass
         except Timeout:
             pass
+        # verify that we backoff for 5 times
+        self.assertEquals(mocked_request.call_count, 5)
 
+    @mock.patch('tap_recharge.client.requests.Session.request')
+    def test_check_access_token_connection_error_and_backoff(self, mocked_request):
+        """
+        Check whether the request backoffs properly for __enter__() for 5 times in case of Timeout error.
+        """
+        mocked_request.side_effect = ConnectionError
+
+        config = {
+            "access_token": "dummy_at",
+            "user_agent": "dummy_ua"
+        }
+        # initialize 'RechargeClient'
+        try:
+            with RechargeClient(
+                config['access_token'],
+                config['user_agent'],
+                config.get('request_timeout')) as client:
+                pass
+        except ConnectionError:
+            pass
         # verify that we backoff for 5 times
         self.assertEquals(mocked_request.call_count, 5)
 
