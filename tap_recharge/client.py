@@ -154,15 +154,10 @@ class RechargeClient:
         else:
             return True
 
-    # Backoff for 5 times when Timeout error occurs
+    # Added backoff for 5 times when Timeout error occurs
     @backoff.on_exception(
         backoff.expo,
-        Timeout,
-        max_tries=5,
-        factor=2)
-    @backoff.on_exception(
-        backoff.expo,
-        (Server5xxError, requests.ConnectionError, Server429Error),
+        (Timeout, Server5xxError, requests.ConnectionError, Server429Error),
         max_tries=5,
         factor=2)
     # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
