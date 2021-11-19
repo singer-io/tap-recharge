@@ -154,10 +154,12 @@ class RechargeClient:
         else:
             return True
 
+    # Backoff for 5 times when Timeout error occurs
     @backoff.on_exception(
-        backoff.constant,
+        backoff.expo,
         Timeout,
-        max_tries=5) # Interval value not consistent if jitter not None
+        max_tries=5,
+        factor=2)
     @backoff.on_exception(
         backoff.expo,
         (Server5xxError, requests.ConnectionError, Server429Error),
