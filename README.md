@@ -172,7 +172,7 @@ This tap:
     }
     ```
     
-    Optionally, also create a `state.json` file. `currently_syncing` is an optional attribute used for identifying the last object to be synced in case the job is interrupted mid-stream. The next run would begin where the last job left off. The `request_timeout` is an optional paramater to set timeout for requests. Default: 300 seconds
+    Optionally, also create a `state.json` file. `currently_syncing` is an optional attribute used for identifying the last object to be synced in case the job is interrupted mid-stream. The next run would begin where the last job left off. The `request_timeout` is an optional parameter to set a timeout for requests. Default: 300 seconds
 
     ```json
     {
