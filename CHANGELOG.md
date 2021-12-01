@@ -1,5 +1,7 @@
 # Changelog
 
+## 1 1.2
+  * Request timeout functionality added [#19](https://github.com/singer-io/tap-recharge/pull/19)
 ## 1.1.1
   * Fix bookmark access [#17](https://github.com/stitchdata/sources-utils/pull/17)
 
