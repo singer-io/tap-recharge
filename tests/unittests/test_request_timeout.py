@@ -1,7 +1,6 @@
 from tap_recharge.client import RechargeClient
 import unittest
 from unittest import mock
-from unittest.case import TestCase
 from requests.exceptions import Timeout, ConnectionError
 
 class TestBackoffError(unittest.TestCase):
@@ -15,8 +14,8 @@ class TestBackoffError(unittest.TestCase):
         Check whether the request backoffs properly for request() for 5 times in case of Timeout error.
         """
         mock_request.side_effect = Timeout
+        client = RechargeClient("dummy_access_token", "dummy_user_agent", 300)
         with self.assertRaises(Timeout):
-            client = RechargeClient("dummy_access_token", "dummy_user_agent", 300)
             client.request("GET")
         self.assertEquals(mock_request.call_count, 5)
 
