@@ -3,9 +3,10 @@ import requests
 
 import singer
 from singer import metrics, utils
+from requests.exceptions import Timeout
 
 LOGGER = singer.get_logger()
-
+REQUEST_TIMEOUT = 300
 
 class Server5xxError(Exception):
     pass
@@ -101,13 +102,26 @@ class RechargeClient:
     def __init__(
             self,
             access_token,
-            user_agent=None):
+            user_agent=None,
+            request_timeout=REQUEST_TIMEOUT):
         self.__access_token = access_token
         self.__user_agent = user_agent
         self.__session = requests.Session()
         self.__base_url = None
         self.__verified = False
+        # if request_timeout is other than 0,"0" or "" then use request_timeout
+        if request_timeout and float(request_timeout):
+            request_timeout = float(request_timeout)
+        else: # If value is 0,"0" or "" then set default to 300 seconds.
+            request_timeout = REQUEST_TIMEOUT
+        self.request_timeout = request_timeout
 
+    # Backoff the request for 5 times when Timeout or Connection error occurs
+    @backoff.on_exception(
+        backoff.expo,
+        (Timeout, requests.ConnectionError),
+        max_tries=5,
+        factor=2)
     def __enter__(self):
         self.__verified = self.check_access_token()
         return self
@@ -115,6 +129,7 @@ class RechargeClient:
     def __exit__(self, exception_type, exception_value, traceback):
         self.__session.close()
 
+    # Backoff the request for 5 times when Timeout error occurs
     @backoff.on_exception(
         backoff.expo,
         Server5xxError,
@@ -131,17 +146,18 @@ class RechargeClient:
         response = self.__session.get(
             # Simple endpoint that returns 1 record w/ default organization URN
             url='https://api.rechargeapps.com',
-            headers=headers)
+            headers=headers,
+            timeout=self.request_timeout)
         if response.status_code != 200:
             LOGGER.error('Error status_code = %s', response.status_code)
             raise_for_error(response)
         else:
             return True
 
-
+    # Added backoff for 5 times when Timeout error occurs
     @backoff.on_exception(
         backoff.expo,
-        (Server5xxError, requests.ConnectionError, Server429Error),
+        (Timeout, Server5xxError, requests.ConnectionError, Server429Error),
         max_tries=5,
         factor=2)
     # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
@@ -174,7 +190,7 @@ class RechargeClient:
             kwargs['headers']['Content-Type'] = 'application/json'
 
         with metrics.http_request_timer(endpoint) as timer:
-            response = self.__session.request(method, url, stream=True, **kwargs)
+            response = self.__session.request(method, url, stream=True, timeout=self.request_timeout, **kwargs)
             timer.tags[metrics.Tag.http_status_code] = response.status_code
 
         if response.status_code >= 500:
@@ -192,7 +208,6 @@ class RechargeClient:
         except Exception as err:
             LOGGER.error(err)
             raise Exception(err)
-
         return response_json, response.links
 
     def get(self, path, **kwargs):

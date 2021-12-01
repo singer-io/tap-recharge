@@ -15,7 +15,18 @@ jobs:
           name: 'pylint'
           command: |
             source /usr/local/share/virtualenvs/tap-recharge/bin/activate
-            pylint tap_recharge --disable 'missing-module-docstring,missing-function-docstring,missing-class-docstring,no-else-raise,raise-missing-from,inconsistent-return-statements'
+            pylint tap_recharge --disable 'missing-module-docstring,missing-function-docstring,missing-class-docstring,no-else-raise,raise-missing-from,inconsistent-return-statements,line-too-long'
+      - run:
+          name: 'Unit Tests'
+          command: |
+            source /usr/local/share/virtualenvs/tap-recharge/bin/activate
+            pip install nose coverage
+            nosetests --with-coverage --cover-erase --cover-package=tap_recharge --cover-html-dir=htmlcov tests/unittests
+            coverage html
+      - store_test_results:
+          path: test_output/report.xml
+      - store_artifacts:
+          path: htmlcov
       - run:
           when: always
           name: 'Integration Tests'
