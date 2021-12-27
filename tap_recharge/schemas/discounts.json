@@ -5,15 +5,98 @@
     "id": {
       "type": ["null", "integer"]
     },
+    "applies_to": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ids": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "purchase_item_type": {
+          "type": ["null", "string"]
+        },
+        "resource": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "channel_settings": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "api": {
+          "type": ["null", "object"],
+          "additionalProperties": false,
+          "properties": {
+            "can_apply": {
+              "type": ["null", "boolean"]
+            }
+          }
+        },
+        "customer_portal": {
+          "type": ["null", "object"],
+          "additionalProperties": false,
+          "properties": {
+            "can_apply": {
+              "type": ["null", "boolean"]
+            }
+          }
+        },
+        "merchant_portal": {
+          "type": ["null", "object"],
+          "additionalProperties": false,
+          "properties": {
+            "can_apply": {
+              "type": ["null", "boolean"]
+            }
+          }
+        },
+        "checkout_page": {
+          "type": ["null", "object"],
+          "additionalProperties": false,
+          "properties": {
+            "can_apply": {
+              "type": ["null", "boolean"]
+            }
+          }
+        }
+      }
+    },
     "code": {
       "type": ["null", "string"]
     },
-    "value": {
-      "type": ["null", "integer"]
+    "created_at": {
+      "type": ["null", "string"],
+      "format": "date-time"
     },
     "ends_at": {
       "type": ["null", "string"],
       "format": "date-time"
+    },
+    "external_discount_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "external_discount_source": {
+      "type": ["null", "string"]
+    },
+    "prerequisite_subtotal_min": {
+      "type": ["null", "string"]
     },
     "starts_at": {
       "type": ["null", "string"],
@@ -22,37 +105,30 @@
     "status": {
       "type": ["null", "string"]
     },
-    "usage_limit": {
-      "type": ["null", "integer"]
-    },
-    "applies_to_id": {
-      "type": ["null", "integer"]
-    },
-    "applies_to_resource": {
-      "type": ["null", "string"]
-    },
-    "times_used": {
-      "type": ["null", "integer"]
-    },
-    "duration": {
-      "type": ["null", "string"]
-    },
-    "duration_usage_limit": {
-      "type": ["null", "integer"]
-    },
-    "applies_to_product_type": {
-      "type": ["null", "string"]
-    },
-    "created_at": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
     "updated_at": {
       "type": ["null", "string"],
       "format": "date-time"
     },
-    "once_per_customer": {
-      "type": ["null", "boolean"]
+    "usage_limits": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "automatic_redemptions_per_customer": {
+          "type": ["null", "integer"]
+        },
+        "first_time_customer_restriction": {
+          "type": ["null", "boolean"]
+        },
+        "one_application_per_customer": {
+          "type": ["null", "boolean"]
+        }
+      }
+    },
+    "value": {
+      "type": ["null", "string"]
+    },
+    "value_type": {
+      "type": ["null", "string"]
     }
   }
 }

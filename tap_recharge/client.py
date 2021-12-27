@@ -180,6 +180,10 @@ class RechargeClient:
 
         if 'headers' not in kwargs:
             kwargs['headers'] = {}
+
+        # Pagination w/ cursor requires version header
+        # Reference: https://developer.rechargepayments.com/2021-11/cursor_pagination
+        kwargs['headers']['X-Recharge-Version'] = '2021-11'
         kwargs['headers']['X-Recharge-Access-Token'] = self.__access_token
         kwargs['headers']['Accept'] = 'application/json'
 

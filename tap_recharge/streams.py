@@ -5,6 +5,7 @@ This module defines the stream classes and their individual sync logic.
 import datetime
 
 from typing import Iterator
+from typing_extensions import TypeVarTuple
 
 import singer
 from singer import Transformer, utils, metrics, bookmarks
@@ -14,7 +15,7 @@ from tap_recharge.client import RechargeClient
 
 LOGGER = singer.get_logger()
 
-MAX_PAGE_LIMIT = 250
+MAX_PAGE_LIMIT = 100 # Reduced from 250 prevent truncated JSON string termination errors
 
 
 def get_recharge_bookmark(
@@ -194,69 +195,48 @@ class FullTableStream(BaseStream):
 
         return state
 
-
-class PageBasedPagingStream(IncrementalStream):
-    """
-    A generic page based pagination implementation for the Recharge API.
-
-    Docs: https://developer.rechargepayments.com/?python#page-based-pagination
-    """
-
-    def get_records(
-            self,
-            bookmark_datetime: datetime = None,
-            is_parent: bool = False) -> Iterator[list]:
-        page = 1
-        self.params.update({
-            'limit': MAX_PAGE_LIMIT,
-            'page': page
-            })
-        result_size = MAX_PAGE_LIMIT
-
-        while result_size == MAX_PAGE_LIMIT:
-            records, _ = self.client.get(self.path, params=self.params)
-
-            result_size = len(records.get(self.data_key))
-            page += 1
-            self.params.update({'page': page})
-
-            yield from records.get(self.data_key)
-
-
 class CursorPagingStream(IncrementalStream):
     """
     A generic cursor pagination implemantation for the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/?python#cursor-pagination
+    Docs: https://developer.rechargepayments.com/2021-11/cursor_pagination
     """
 
     def get_records(
             self,
             bookmark_datetime: datetime = None,
             is_parent: bool = False) -> Iterator[list]:
-        self.params.update({'limit': MAX_PAGE_LIMIT})
-        paging = True
-        path = self.path
-        url = None
 
-        while paging:
-            records, links = self.client.get(path, url=url, params=self.params)
+        self.params.update({
+            'limit': MAX_PAGE_LIMIT,
+            'cursor': None,
+            'updated_at_min': None
+        })
 
-            if links.get('next'):
-                path = None
-                self.params = None
-                url = links.get('next', {}).get('url')
+        if self.updated_at_min:
+            self.params.update({
+                'updated_at_min': utils.strftime(bookmark_datetime)
+            })
+
+        more_data = True
+
+        while more_data:
+            records, _ = self.client.get(self.path, params=self.params)
+            
+            if records.get('next_cursor') is not None:
+                next_cursor = records['next_cursor']
+                self.params.update({'cursor': next_cursor})
+                more_data = True
             else:
-                paging = False
+                more_data = False
 
             yield from records.get(self.data_key)
-
 
 class Addresses(CursorPagingStream):
     """
     Retrieves addresses from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-addresses
+    Docs: https://developer.rechargepayments.com/2021-11/addresses/list_addresses
     """
     tap_stream_id = 'addresses'
     key_properties = ['id']
@@ -265,13 +245,14 @@ class Addresses(CursorPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'addresses'
+    updated_at_min = True
 
 
 class Charges(CursorPagingStream):
     """
     Retrieves charges from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-charges
+    Docs: https://developer.rechargepayments.com/2021-11/charges/charge_list
     """
     tap_stream_id = 'charges'
     key_properties = ['id']
@@ -280,28 +261,14 @@ class Charges(CursorPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'charges'
+    updated_at_min = True
 
 
-class Collections(CursorPagingStream):
-    """
-    Retrieves collections from the Recharge API.
-
-    Docs: https://developer.rechargepayments.com/#list-collections
-    """
-    tap_stream_id = 'collections'
-    key_properties = ['id']
-    path = 'collections'
-    replication_key = 'updated_at'
-    valid_replication_keys = ['updated_at']
-    params = {'sort_by': f'{replication_key}-asc'}
-    data_key = 'collections'
-
-
-class Customers(PageBasedPagingStream):
+class Customers(CursorPagingStream):
     """
     Retrieves customers from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-customers
+    Docs: https://developer.rechargepayments.com/2021-11/customers/customers_list
     """
     tap_stream_id = 'customers'
     key_properties = ['id']
@@ -310,13 +277,14 @@ class Customers(PageBasedPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'customers'
+    updated_at_min = True
 
 
 class Discounts(CursorPagingStream):
     """
     Retrieves discounts from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-discounts
+    Docs: https://developer.rechargepayments.com/2021-11/discounts/discounts_list
     """
     tap_stream_id = 'discounts'
     key_properties = ['id']
@@ -325,13 +293,14 @@ class Discounts(CursorPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'discounts'
+    updated_at_min = True
 
 
-class MetafieldsStore(PageBasedPagingStream):
+class MetafieldsStore(CursorPagingStream):
     """
     Retrieves store metafields from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-metafields
+    Docs: https://developer.rechargepayments.com/2021-11/metafields/metafields_list
     """
     tap_stream_id = 'metafields_store'
     key_properties = ['id']
@@ -341,15 +310,16 @@ class MetafieldsStore(PageBasedPagingStream):
     params = {
         'sort_by': f'{replication_key}-asc',
         'owner_resource': 'store'
-        }
+    }
     data_key = 'metafields'
+    updated_at_min = False
 
 
-class MetafieldsCustomer(PageBasedPagingStream):
+class MetafieldsCustomer(CursorPagingStream):
     """
     Retrieves customer metafields from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-metafields
+    Docs: https://developer.rechargepayments.com/2021-11/metafields/metafields_list
     """
     tap_stream_id = 'metafields_customer'
     key_properties = ['id']
@@ -359,15 +329,16 @@ class MetafieldsCustomer(PageBasedPagingStream):
     params = {
         'sort_by': f'{replication_key}-asc',
         'owner_resource': 'customer'
-        }
+    }
     data_key = 'metafields'
+    updated_at_min = False
 
 
-class MetafieldsSubscription(PageBasedPagingStream):
+class MetafieldsSubscription(CursorPagingStream):
     """
     Retrieves subscription metafields from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-metafields
+    Docs: https://developer.rechargepayments.com/2021-11/metafields/metafields_list
     """
     tap_stream_id = 'metafields_subscription'
     key_properties = ['id']
@@ -377,15 +348,16 @@ class MetafieldsSubscription(PageBasedPagingStream):
     params = {
         'sort_by': f'{replication_key}-asc',
         'owner_resource': 'subscription'
-        }
+    }
     data_key = 'metafields'
+    updated_at_min = False
 
 
-class Onetimes(PageBasedPagingStream):
+class Onetimes(CursorPagingStream):
     """
     Retrieves non-recurring line items on queued orders from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-onetimes
+    Docs: https://developer.rechargepayments.com/2021-11/onetimes/onetimes_list
     """
     tap_stream_id = 'onetimes'
     key_properties = ['id']
@@ -394,13 +366,14 @@ class Onetimes(PageBasedPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'onetimes'
+    updated_at_min = True
 
 
 class Orders(CursorPagingStream):
     """
     Retrieves orders from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-orders
+    Docs: https://developer.rechargepayments.com/2021-11/orders/orders_list
     """
     tap_stream_id = 'orders'
     key_properties = ['id']
@@ -409,33 +382,49 @@ class Orders(CursorPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'orders'
+    updated_at_min = True
 
+class Plans(CursorPagingStream):
+    """
+    Retrieves plans from the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/2021-11/plans/plans_list
+    """
+    tap_stream_id = 'plans'
+    key_properties = ['id']
+    path = 'plans'
+    replication_key = 'updated_at'
+    valid_replication_keys = ['updated_at']
+    params = {'sort_by': f'{replication_key}-asc'}
+    data_key = 'plans'
+    updated_at_min = True
 
 class Products(CursorPagingStream):
     """
     Retrieves products from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-products
+    Docs: https://developer.rechargepayments.com/2021-11/products/products_list
     """
     tap_stream_id = 'products'
-    key_properties = ['id']
+    key_properties = ['external_product_id']
     path = 'products'
-    replication_key = 'updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
-    valid_replication_keys = ['updated_at']
+    replication_key = 'external_updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
+    valid_replication_keys = ['external_updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'products'
+    updated_at_min = False
 
 
-class Shop(FullTableStream):
+class Store(FullTableStream):
     """
     Retrieves basic info about your store setup from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#shop
+    Docs: https://developer.rechargepayments.com/2021-11/store/store_retrieve
     """
-    tap_stream_id = 'shop'
+    tap_stream_id = 'store'
     key_properties = ['id']
-    path = 'shop'
-    data_key = 'shop'
+    path = 'store'
+    data_key = 'store'
 
     def get_records(
             self,
@@ -450,7 +439,7 @@ class Subscriptions(CursorPagingStream):
     """
     Retrieves subscriptions from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#list-subscriptions
+    Docs: https://developer.rechargepayments.com/2021-11/subscriptions/subscriptions_list
     """
     tap_stream_id = 'subscriptions'
     key_properties = ['id']
@@ -459,12 +448,12 @@ class Subscriptions(CursorPagingStream):
     valid_replication_keys = ['updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'subscriptions'
+    updated_at_min = True
 
 
 STREAMS = {
     'addresses': Addresses,
     'charges': Charges,
-    'collections': Collections,
     'customers': Customers,
     'discounts': Discounts,
     'metafields_store': MetafieldsStore,
@@ -472,7 +461,8 @@ STREAMS = {
     'metafields_subscription': MetafieldsSubscription,
     'onetimes': Onetimes,
     'orders': Orders,
+    'plans': Plans,
     'products': Products,
-    'shop': Shop,
+    'store': Store,
     'subscriptions': Subscriptions
 }

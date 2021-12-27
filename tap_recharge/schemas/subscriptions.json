@@ -2,8 +2,58 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": ["null", "integer"]
+    },
     "address_id": {
       "type": ["null", "integer"]
+    },
+    "customer_id": {
+      "type": ["null", "integer"]
+    },
+    "analytics_data": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "utm_params": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "utm_campaign": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_content": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_data_source": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_medium": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_source": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_term": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_timestamp": {
+                    "type": ["null", "string"],
+                    "format": "date-time"
+                  }
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
     },
     "cancellation_reason": {
       "type": ["null", "string"]
@@ -22,17 +72,32 @@
       "type": ["null", "string"],
       "format": "date-time"
     },
-    "customer_id": {
-      "type": ["null", "integer"]
-    },
     "expire_after_specific_number_of_charges": {
       "type": ["null", "integer"]
+    },
+    "external_product_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "external_variant_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
     },
     "has_queued_charges": {
       "type": ["null", "integer"]
     },
-    "id": {
-      "type": ["null", "integer"]
+    "is_prepaid": {
+      "type": ["null", "boolean"]
     },
     "is_skippable": {
       "type": ["null", "boolean"]
@@ -60,8 +125,7 @@
       "type": ["null", "string"]
     },
     "price": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
+      "type": ["null", "string"]
     },
     "product_title": {
       "type": ["null", "string"]
@@ -91,20 +155,11 @@
     "quantity": {
       "type": ["null", "integer"]
     },
-    "recharge_product_id": {
-      "type": ["null", "integer"]
-    },
-    "shopify_product_id": {
-      "type": ["null", "integer"]
-    },
-    "shopify_variant_id": {
-      "type": ["null", "integer"]
-    },
     "sku": {
       "type": ["null", "string"]
     },
     "sku_override": {
-      "type": ["null", "string"]
+      "type": ["null", "boolean"]
     },
     "status": {
       "type": ["null", "string"]

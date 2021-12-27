@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": ["null", "integer"]
+    },
+    "checkout_logo_url": {
+      "type": ["null", "string"]
+    },
+    "checkout_platform": {
+      "type": ["null", "string"]
+    },
+    "created_at": {
+      "type": ["null", "string"]
+    },
+    "currency": {
+      "type": ["null", "string"]
+    },
+    "customer_portal_base_url": {
+      "type": ["null", "string"]
+    },
+    "default_api_version": {
+      "type": ["null", "string"]
+    },
+    "email": {
+      "type": ["null", "string"]
+    },
+    "external_platform": {
+      "type": ["null", "string"]
+    },
+    "identifier": {
+      "type": ["null", "string"]
+    },
+    "merchant_portal_base_url": {
+      "type": ["null", "string"]
+    },
+    "name": {
+      "type": ["null", "string"]
+    },
+    "phone": {
+      "type": ["null", "string"]
+    },
+    "timezone": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "iana_name": {
+          "type": ["null", "string"]
+        },
+        "name": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "updated_at": {
+      "type": ["null", "string"]
+    },
+    "weight_unit": {
+      "type": ["null", "string"]
+    }
+  }
+}

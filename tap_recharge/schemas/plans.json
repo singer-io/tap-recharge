@@ -1,0 +1,127 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": ["null", "integer"]
+      },
+      "channel_settings": {
+        "type": ["null", "object"],
+        "additionalProperties": false,
+        "properties": {
+          "api": {
+            "type": ["null", "object"],
+            "additionalProperties": false,
+            "properties": {
+              "can_apply": {
+                "type": ["null", "boolean"]
+              }
+            }
+          },
+          "customer_portal": {
+            "type": ["null", "object"],
+            "additionalProperties": false,
+            "properties": {
+              "can_apply": {
+                "type": ["null", "boolean"]
+              }
+            }
+          },
+          "merchant_portal": {
+            "type": ["null", "object"],
+            "additionalProperties": false,
+            "properties": {
+              "can_apply": {
+                "type": ["null", "boolean"]
+              }
+            }
+          },
+          "checkout_page": {
+            "type": ["null", "object"],
+            "additionalProperties": false,
+            "properties": {
+              "can_apply": {
+                "type": ["null", "boolean"]
+              }
+            }
+          }
+        }
+      },
+      "created_at": {
+        "type": ["null", "string"],
+        "format": "date-time"
+      },
+      "deleted_at": {
+        "type": ["null", "string"],
+        "format": "date-time"
+      },
+      "discount_amount": {
+        "type": ["null", "string"]
+      },
+      "discount_type": {
+        "type": ["null", "string"]
+      },
+      "external_plan_group_id": {
+        "type": ["null", "string"]
+      },
+      "external_plan_id": {
+        "type": ["null", "string"]
+      },
+      "external_plan_name": {
+        "type": ["null", "string"]
+      },
+      "external_product_id": {
+        "type": ["null", "object"],
+        "additionalProperties": false,
+        "properties": {
+          "ecommerce": {
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "sort_order": {
+        "type": ["null", "integer"]
+      },
+      "subscription_preferences": {
+        "type": ["null", "object"],
+        "additionalProperties": false,
+        "properties": {
+          "charge_interval_frequency": {
+            "type": ["null", "integer"]
+          },
+          "cutoff_day_of_month": {
+            "type": ["null", "integer"]
+          },
+          "cutoff_day_of_week": {
+            "type": ["null", "integer"]
+          },
+          "expire_after_specific_number_of_charges": {
+            "type": ["null", "integer"]
+          },
+          "order_day_of_month": {
+            "type": ["null", "integer"]
+          },
+          "order_day_of_week": {
+            "type": ["null", "integer"]
+          },
+          "order_interval_frequency": {
+            "type": ["null", "integer"]
+          },
+          "interval_unit": {
+            "type": ["null", "boolean"]
+          }
+        }
+      },
+      "title": {
+        "type": ["null", "string"]
+      },
+      "type": {
+        "type": ["null", "string"]
+      },
+      "updated_at": {
+        "type": ["null", "string"],
+        "format": "date-time"
+      }
+    }
+  }
+  

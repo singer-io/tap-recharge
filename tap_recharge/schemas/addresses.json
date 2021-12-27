@@ -2,35 +2,13 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": ["null", "integer"]
+    },
     "address1": {
       "type": ["null", "string"]
     },
     "address2": {
-      "type": ["null", "string"]
-    },
-    "cart_attributes": {
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": ["null", "string"]
-              },
-              "value": {
-                "type": ["null", "string"]
-              }
-            }
-          }
-        },
-        {
-          "type": "null"
-        }
-      ]
-    },
-    "cart_note": {
       "type": ["null", "string"]
     },
     "city": {
@@ -39,7 +17,7 @@
     "company": {
       "type": ["null", "string"]
     },
-    "country": {
+    "country_code": {
       "type": ["null", "string"]
     },
     "created_at": {
@@ -49,19 +27,32 @@
     "customer_id": {
       "type": ["null", "integer"]
     },
-    "discount_id": {
-      "type": ["null", "integer"]
+    "discounts": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": ["null", "integer"]
+              }
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "first_name": {
       "type": ["null", "string"]
     },
-    "id": {
-      "type": ["null", "integer"]
-    },
     "last_name": {
       "type": ["null", "string"]
     },
-    "note_attributes": {
+    "order_attributes": {
       "anyOf": [
         {
           "type": "array",
@@ -83,32 +74,13 @@
         }
       ]
     },
-    "original_shipping_lines": {
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "code": {
-                "type": ["null", "string"]
-              },
-              "price": {
-                "type": ["null", "string"]
-              },
-              "title": {
-                "type": ["null", "string"]
-              }
-            }
-          }
-        },
-        {
-          "type": "null"
-        }
-      ]
+    "order_note": {
+      "type": ["null", "string"]
     },
     "phone": {
+      "type": ["null", "string"]
+    },
+    "presentation_currency": {
       "type": ["null", "string"]
     },
     "province": {

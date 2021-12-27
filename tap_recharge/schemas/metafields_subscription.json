@@ -2,15 +2,15 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": ["null", "integer"]
+    },
     "created_at": {
       "type": ["null", "string"],
       "format": "date-time"
     },
     "description": {
       "type": ["null", "string"]
-    },
-    "id": {
-      "type": ["null", "integer"]
     },
     "key": {
       "type": ["null", "string"]
