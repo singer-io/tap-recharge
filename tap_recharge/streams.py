@@ -3,19 +3,15 @@ This module defines the stream classes and their individual sync logic.
 """
 
 import datetime
-
 from typing import Iterator
-from typing_extensions import TypeVarTuple
-
 import singer
 from singer import Transformer, utils, metrics, bookmarks
-
 from tap_recharge.client import RechargeClient
 
 
 LOGGER = singer.get_logger()
 
-MAX_PAGE_LIMIT = 100 # Reduced from 250 prevent truncated JSON string termination errors
+MAX_PAGE_LIMIT = 50 # Reduced from 250 prevent truncated JSON string termination errors
 
 
 def get_recharge_bookmark(
@@ -133,7 +129,7 @@ class IncrementalStream(BaseStream):
         max_datetime = bookmark_datetime
 
         with metrics.record_counter(self.tap_stream_id) as counter:
-            for record in self.get_records(config, bookmark_datetime):
+            for record in self.get_records(bookmark_datetime):
                 transformed_record = transformer.transform(record, stream_schema, stream_metadata)
 
                 record_datetime = utils.strptime_to_utc(transformed_record[self.replication_key])
@@ -221,11 +217,15 @@ class CursorPagingStream(IncrementalStream):
         more_data = True
 
         while more_data:
-            records, _ = self.client.get(self.path, params=self.params)
-            
+            records = self.client.get(self.path, params=self.params)
+
             if records.get('next_cursor') is not None:
                 next_cursor = records['next_cursor']
                 self.params.update({'cursor': next_cursor})
+
+                # Remove other params (besides limit)
+                self.params.pop('updated_at_min', None)
+                self.params.pop('sort_by', None)
                 more_data = True
             else:
                 more_data = False
@@ -247,6 +247,21 @@ class Addresses(CursorPagingStream):
     data_key = 'addresses'
     updated_at_min = True
 
+
+# Endpoinnt may not be available for all orgs
+class Collections(CursorPagingStream):
+    """
+    Retrieves collections from the Recharge API.
+    Docs: https://developer.rechargepayments.com/#list-collections
+    """
+    tap_stream_id = 'collections'
+    key_properties = ['id']
+    path = 'collections'
+    replication_key = 'updated_at'
+    valid_replication_keys = ['updated_at']
+    params = {'sort_by': f'{replication_key}-asc'}
+    data_key = 'collections'
+    updated_at_min = False
 
 class Charges(CursorPagingStream):
     """
@@ -343,7 +358,8 @@ class MetafieldsSubscription(CursorPagingStream):
     tap_stream_id = 'metafields_subscription'
     key_properties = ['id']
     path = 'metafields'
-    replication_key = 'updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
+    # pseudo-incremental; doesn't support `updated_at_min` param
+    replication_key = 'updated_at'
     valid_replication_keys = ['updated_at']
     params = {
         'sort_by': f'{replication_key}-asc',
@@ -399,6 +415,26 @@ class Plans(CursorPagingStream):
     data_key = 'plans'
     updated_at_min = True
 
+
+# Endpoinnt may not be available for all orgs
+class PaymentMethods(CursorPagingStream):
+    """
+    Retrieves payment methods from the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/2021-11/payment_methods/payment_methods_list
+    """
+    tap_stream_id = 'payment_methods'
+    key_properties = ['id']
+    path = 'payment_methods'
+    # pseudo-incremental; doesn't support `updated_at_min` param
+    replication_key = 'updated_at'
+    valid_replication_keys = ['updated_at']
+    params = {'sort_by': f'{replication_key}-asc'}
+    data_key = 'payment_methods'
+    updated_at_min = False
+
+
+# Endpoinnt may not be available for all orgs
 class Products(CursorPagingStream):
     """
     Retrieves products from the Recharge API.
@@ -408,7 +444,8 @@ class Products(CursorPagingStream):
     tap_stream_id = 'products'
     key_properties = ['external_product_id']
     path = 'products'
-    replication_key = 'external_updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
+    # pseudo-incremental; doesn't support `updated_at_min` param
+    replication_key = 'external_updated_at'
     valid_replication_keys = ['external_updated_at']
     params = {'sort_by': f'{replication_key}-asc'}
     data_key = 'products'
@@ -430,7 +467,7 @@ class Store(FullTableStream):
             self,
             bookmark_datetime: datetime = None,
             is_parent: bool = False) -> Iterator[list]:
-        records, _ = self.client.get(self.path)
+        records = self.client.get(self.path)
 
         return [records.get(self.data_key)]
 
@@ -454,6 +491,7 @@ class Subscriptions(CursorPagingStream):
 STREAMS = {
     'addresses': Addresses,
     'charges': Charges,
+    'collections': Collections,
     'customers': Customers,
     'discounts': Discounts,
     'metafields_store': MetafieldsStore,
@@ -461,6 +499,7 @@ STREAMS = {
     'metafields_subscription': MetafieldsSubscription,
     'onetimes': Onetimes,
     'orders': Orders,
+    'payment_methods': PaymentMethods,
     'plans': Plans,
     'products': Products,
     'store': Store,

@@ -2,11 +2,11 @@ from singer.catalog import Catalog
 from tap_recharge.schema import get_schemas
 
 
-def discover():
+def discover(client):
     """
     Constructs a singer Catalog object based on the schemas and metadata.
     """
-    schemas, field_metadata = get_schemas()
+    schemas, field_metadata = get_schemas(client)
     streams = []
 
     for schema_name, schema in schemas.items():

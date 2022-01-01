@@ -8,22 +8,23 @@ This tap:
 
 - Pulls raw data from the [ReCharge Payments API](https://developer.rechargepayments.com/)
 - Extracts the following resources:
-  - [Addresses](https://developer.rechargepayments.com/#list-addresses)
-  - [Charges](https://developer.rechargepayments.com/#list-charges)
-  - [Collections](https://developer.rechargepayments.com/#list-collections-alpha)
-  - [Customers](https://developer.rechargepayments.com/#list-customers)
-  - [Discounts](https://developer.rechargepayments.com/#list-discounts)
-  - [Metafields for Store, Customers, Subscriptions](https://developer.rechargepayments.com/#list-metafields)
-  - [One-time Products](https://developer.rechargepayments.com/#list-onetimes)
-  - [Orders](https://developer.rechargepayments.com/#list-orders)
-  - [Products](https://developer.rechargepayments.com/#list-products)
-  - [Shop](https://developer.rechargepayments.com/#retrieve-a-shop)
-  - [Subscriptions](https://developer.rechargepayments.com/#list-subscriptions)
+  - [Addresses](https://developer.rechargepayments.com/2021-11/addresses/list_addresses)
+  - [Charges](https://developer.rechargepayments.com/2021-11/charges/charge_list)
+  - [Collections, DEPRECATED](https://developer.rechargepayments.com/#list-collections-alpha)
+  - [Customers](https://developer.rechargepayments.com/2021-11/customers/customers_list)
+  - [Discounts](https://developer.rechargepayments.com/2021-11/discounts/discounts_list)
+  - [Metafields for Store, Customers, Subscriptions](https://developer.rechargepayments.com/2021-11/metafields/metafields_list)
+  - [One-time Products](https://developer.rechargepayments.com/2021-11/onetimes/onetimes_list)
+  - [Orders](https://developer.rechargepayments.com/2021-11/orders/orders_list)
+  - [Payment Methods](https://developer.rechargepayments.com/2021-11/payment_methods/payment_methods_list)
+  - [Products](https://developer.rechargepayments.com/2021-11/products/products_list)
+  - [Store](https://developer.rechargepayments.com/2021-11/store/store_retrieve)
+  - [Subscriptions](https://developer.rechargepayments.com/2021-11/subscriptions/subscriptions_list)
 - Outputs the schema for each resource
 - Incrementally pulls data based on the input state
 
 ## Streams
-[**addresses**](https://developer.rechargepayments.com/#list-addresses)
+[**addresses**](https://developer.rechargepayments.com/2021-11/addresses/list_addresses)
 - Endpoint: https://api.rechargeapps.com/addresses
 - Primary keys: id
 - Foreign keys: customer_id (customers), discount_id (discounts)
@@ -32,10 +33,10 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**charges**](https://developer.rechargepayments.com/#list-charges)
+[**charges**](https://developer.rechargepayments.com/2021-11/charges/charge_list)
 - Endpoint: https://api.rechargeapps.com/charges
 - Primary keys: id
-- Foreign keys: address_id (addresses), customer_id (customers), subscription_id (subscriptions), shopify_product_id, shopify_variant_id, transaction_id
+- Foreign keys: address_id (addresses), customer_id (customers), subscription_id (subscriptions), external_product_id, external_variant_id, transaction_id
 - Replication strategy: Incremental (query filtered)
   - Bookmark query parameter: updated_at_min
   - Bookmark: updated_at (date-time)
@@ -43,22 +44,23 @@ This tap:
 
 [**collections**](https://developer.rechargepayments.com/#list-collections-alpha)
 - Endpoint: https://api.rechargeapps.com/collections
+- This endpoint is DEPRECATED (not included) in 2021-11 version of the API
 - Primary keys: id
 - Foreign keys: None
 - Replication strategy: Incremental (query all, filter results)
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**customers**](https://developer.rechargepayments.com/#list-customers)
+[**customers**](https://developer.rechargepayments.com/2021-11/customers/customers_list)
 - Endpoint: https://api.rechargeapps.com/customers
 - Primary keys: id
-- Foreign keys: shopify_customer_id
+- Foreign keys: external_customer_id
 - Replication strategy: Incremental (query filtered)
   - Bookmark query parameter: updated_at_min
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**discounts**](https://developer.rechargepayments.com/#list-discounts)
+[**discounts**](https://developer.rechargepayments.com/2021-11/discounts/discounts_list)
 - Endpoint: https://api.rechargeapps.com/discounts
 - Primary keys: id
 - Foreign keys: applies_to_id
@@ -67,7 +69,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**metafields_customer**](https://developer.rechargepayments.com/#list-metafields)
+[**metafields_customer**](hhttps://developer.rechargepayments.com/2021-11/metafields/metafields_list)
 - Endpoint: https://api.rechargeapps.com/metafields
 - Primary keys: id
 - Foreign keys: owner_id
@@ -76,7 +78,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**metafields_store**](https://developer.rechargepayments.com/#list-metafields)
+[**metafields_store**](https://developer.rechargepayments.com/2021-11/metafields/metafields_list)
 - Endpoint: https://api.rechargeapps.com/metafields
 - Primary keys: id
 - Foreign keys: owner_id
@@ -85,7 +87,7 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**metafields_subscription**](https://developer.rechargepayments.com/#list-metafields)
+[**metafields_subscription**](https://developer.rechargepayments.com/2021-11/metafields/metafields_list)
 - Endpoint: https://api.rechargeapps.com/metafields
 - Primary keys: id
 - Foreign keys: owner_id
@@ -94,43 +96,53 @@ This tap:
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**onetimes**](https://developer.rechargepayments.com/#list-onetimes)
+[**onetimes**](https://developer.rechargepayments.com/2021-11/onetimes/onetimes_list)
 - Endpoint: https://api.rechargeapps.com/onetimes
 - Primary keys: id
-- Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), shopify_product_id, shopify_variant_id
+- Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), external_product_id, external_variant_id
 - Replication strategy: Incremental (query filtered)
   - Bookmark query parameter: updated_at_min
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**orders**](https://developer.rechargepayments.com/#list-orders)
+[**orders**](https://developer.rechargepayments.com/2021-11/orders/orders_list)
 - Endpoint: https://api.rechargeapps.com/orders
 - Primary keys: id
-- Foreign keys: address_id (addresses), charge_id (charges), customer_id (customers), subscription_id (subscriptions), shopify_product_id, shopify_variant_id, shopify_order_id, shopify_id, shopify_customer_id, transaction_id
+- Foreign keys: address_id (addresses), charge_id (charges), customer_id (customers), subscription_id (subscriptions), external_product_id, external_variant_id, external_order_id, external_id, external_customer_id, transaction_id
 - Replication strategy: Incremental (query filtered)
   - Bookmark query parameter: updated_at_min
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**products**](https://developer.rechargepayments.com/#list-products)
-- Endpoint: https://api.rechargeapps.com/products
+[**payment_methods**](https://developer.rechargepayments.com/2021-11/payment_methods/payment_methods_list)
+- Endpoint: https://api.rechargeapps.com/payment_methods
+- Endpoint not available for ALL orgs, needs to be enabled by Recharge Support
 - Primary keys: id
-- Foreign keys: collection_id (collections), shopify_product_id
+- Foreign keys: customer_id
 - Replication strategy: Incremental (query all, filter results)
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
-[**shop**](https://developer.rechargepayments.com/#retrieve-a-shop)
-- Endpoint: https://api.rechargeapps.com/shop
+[**products**](https://developer.rechargepayments.com/2021-11/products/products_list)
+- Endpoint: https://api.rechargeapps.com/products
+- Endpoint not available for ALL orgs
+- Primary keys: id
+- Foreign keys: collection_id (collections), external_product_id
+- Replication strategy: Incremental (query all, filter results)
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**store**](https://developer.rechargepayments.com/2021-11/store/store_retrieve)
+- Endpoint: https://api.rechargeapps.com/store
 - Primary keys: id
 - Foreign keys: None
 - Replication strategy: Full table
 - Transformations: None
 
-[**subscriptions**](https://developer.rechargepayments.com/#list-subscriptions)
+[**subscriptions**](https://developer.rechargepayments.com/2021-11/subscriptions/subscriptions_list)
 - Endpoint: https://api.rechargeapps.com/subscriptions
 - Primary keys: id
-- Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), shopify_product_id, shopify_variant_id
+- Foreign keys: address_id (addresses), customer_id (customers), recharge_product_id (products), external_product_id, external_variant_id
 - Replication strategy: Incremental (query filtered)
   - Bookmark query parameter: updated_at_min
   - Bookmark: updated_at (date-time)
@@ -176,21 +188,22 @@ This tap:
 
     ```json
     {
-        "currently_syncing": "users",
+        "currently_syncing": "addresses",
         "bookmarks": {
-            "addresses": "2019-06-11T13:37:55Z",
-            "charges": "2019-06-19T19:48:42Z",
-            "collections": "2019-06-18T18:23:58Z",
-            "customers": "2019-06-20T00:52:46Z",
-            "discounts": "2019-06-19T19:48:44Z",
-            "metafields_store": "2019-06-11T13:37:55Z",
-            "metafields_customers": "2019-06-19T19:48:42Z",
-            "metafields_subscriptions": "2019-06-18T18:23:58Z",
-            "onetimes": "2019-06-20T00:52:46",
-            "orders": "2019-06-19T19:48:44Z",
-            "products": "2019-06-11T13:37:55Z",
-            "shop": "2019-06-19T19:48:42Z",
-            "subscriptions": "2019-06-18T18:23:58Z"
+            "addresses": "2021-10-11T13:37:55Z",
+            "charges": "2021-10-19T19:48:42Z",
+            "collections": "2019-01-20T00:52:46",
+            "customers": "2021-10-20T00:52:46Z",
+            "discounts": "2021-10-19T19:48:44Z",
+            "metafields_store": "2019-10-11T13:37:55Z",
+            "metafields_customers": "2019-10-19T19:48:42Z",
+            "metafields_subscriptions": "2019-10-18T18:23:58Z",
+            "onetimes": "2019-01-20T00:52:46",
+            "orders": "2021-10-19T19:48:44Z",
+            "payment_methods": "2019-10-11T13:37:55Z",
+            "products": "2019-10-11T13:37:55Z",
+            "store": "2019-10-19T19:48:42Z",
+            "subscriptions": "2021-10-18T18:23:58Z"
         }
     }
     ```
@@ -230,7 +243,7 @@ This tap:
     ```
     Pylint test resulted in the following score:
     ```bash
-    Your code has been rated at 9.78/10
+    Your code has been rated at 9.54/10
     ```
 
     To [check the tap](https://github.com/singer-io/singer-tools#singer-check-tap) and verify working:
@@ -241,29 +254,28 @@ This tap:
     Check tap resulted in the following:
     ```bash
     The output is valid.
-    It contained 75 messages for 13 streams.
+    It contained 145815 messages for 12 streams.
 
-        13 schema messages
-        24 record messages
-        38 state messages
+        12 schema messages
+    145766 record messages
+        37 state messages
 
     Details by stream:
     +-------------------------+---------+---------+
     | stream                  | records | schemas |
     +-------------------------+---------+---------+
-    | discounts               | 1       | 1       |
-    | metafields_subscription | 0       | 1       |
-    | addresses               | 4       | 1       |
-    | shop                    | 1       | 1       |
-    | charges                 | 4       | 1       |
-    | products                | 4       | 1       |
-    | onetimes                | 0       | 1       |
-    | orders                  | 4       | 1       |
-    | collections             | 1       | 1       |
+    | customers               | 7375    | 1       |
     | metafields_store        | 0       | 1       |
+    | metafields_subscription | 0       | 1       |
+    | charges                 | 17356   | 1       |
+    | store                   | 1       | 1       |
+    | plans                   | 198     | 1       |
+    | discounts               | 25370   | 1       |
+    | orders                  | 11666   | 1       |
     | metafields_customer     | 0       | 1       |
-    | subscriptions           | 4       | 1       |
-    | customers               | 1       | 1       |
+    | onetimes                | 0       | 1       |
+    | subscriptions           | 75426   | 1       |
+    | addresses               | 8374    | 1       |
     +-------------------------+---------+---------+
 
     ```

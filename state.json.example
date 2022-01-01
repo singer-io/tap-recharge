@@ -1,18 +1,18 @@
 {
-	"currently_syncing": "users",
-	"bookmarks": {
-		"addresses": "2019-06-11T13:37:55Z",
-		"charges": "2019-06-19T19:48:42Z",
-		"collections": "2019-06-18T18:23:58Z",
-		"customers": "2019-06-20T00:52:46Z",
-		"discounts": "2019-06-19T19:48:44Z",
-		"metafields_store": "2019-06-11T13:37:55Z",
-		"metafields_customers": "2019-06-19T19:48:42Z",
-		"metafields_subscriptions": "2019-06-18T18:23:58Z",
-		"onetimes": "2019-06-20T00:52:46",
-		"orders": "2019-06-19T19:48:44Z",
-		"products": "2019-06-11T13:37:55Z",
-		"shop": "2019-06-19T19:48:42Z",
-		"subscriptions": "2019-06-18T18:23:58Z"
-	}
+    "bookmarks": {
+        "addresses": "2021-10-11T13:37:55Z",
+        "charges": "2021-10-19T19:48:42Z",
+        "collections": "2019-01-20T00:52:46",
+        "customers": "2021-10-20T00:52:46Z",
+        "discounts": "2021-10-19T19:48:44Z",
+        "metafields_store": "2019-10-11T13:37:55Z",
+        "metafields_customers": "2019-10-19T19:48:42Z",
+        "metafields_subscriptions": "2019-10-18T18:23:58Z",
+        "onetimes": "2019-01-20T00:52:46",
+        "orders": "2021-10-19T19:48:44Z",
+        "payment_methods": "2019-10-11T13:37:55Z",
+        "products": "2019-10-11T13:37:55Z",
+        "store": "2019-10-19T19:48:42Z",
+        "subscriptions": "2021-10-18T18:23:58Z"
+    }
 }
