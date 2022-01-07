@@ -2,6 +2,9 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": ["null", "integer"]
+    },
     "address_id": {
       "type": ["null", "integer"]
     },
@@ -12,8 +15,23 @@
     "customer_id": {
       "type": ["null", "integer"]
     },
-    "id": {
-      "type": ["null", "integer"]
+    "external_product_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "external_variant_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
     },
     "next_charge_scheduled_at": {
       "type": ["null", "string"],
@@ -51,20 +69,11 @@
     "quantity": {
       "type": ["null", "integer"]
     },
-    "recharge_product_id": {
-      "type": ["null", "integer"]
-    },
-    "shopify_product_id": {
-      "type": ["null", "integer"]
-    },
-    "shopify_variant_id": {
-      "type": ["null", "integer"]
-    },
     "sku": {
       "type": ["null", "string"]
     },
-    "status": {
-      "type": ["null", "string"]
+    "sku_override": {
+      "type": ["null", "boolean"]
     },
     "updated_at": {
       "type": ["null", "string"],

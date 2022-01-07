@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.0
+  * Major revision to use new version of the Recharge-API [2021-11](https://docs.rechargepayments.com/changelog/2021-11-api-release-notes). This deprecates `collections`, adds `payment_methods`, changes `shop` endpoint to `store`, and adds/removes fields in all other objects. Also, added retry to `client.py` and decrease batch size to address [intermittent unterminated string issue](https://github.com/singer-io/tap-recharge/issues/4).
+
 ## 1 1.2
   * Request timeout functionality added [#19](https://github.com/singer-io/tap-recharge/pull/19)
 ## 1.1.1

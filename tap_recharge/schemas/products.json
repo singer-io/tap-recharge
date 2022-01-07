@@ -2,22 +2,15 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "collection_id": {
-      "type": ["null", "integer"]
-    },
-    "created_at": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "discount_amount": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
-    },
-    "discount_type": {
+    "external_product_id": {
       "type": ["null", "string"]
     },
-    "id": {
-      "type": ["null", "integer"]
+    "brand": {
+      "type": ["null", "string"]
+    },
+    "external_created_at": {
+      "type": ["null", "string"],
+      "format": "date-time"
     },
     "images": {
       "type": ["null", "object"],
@@ -34,73 +27,164 @@
         },
         "small": {
           "type": ["null", "string"]
+        },
+        "sort_order": {
+          "type": ["null", "integer"]
         }
       }
     },
-    "product_id": {
-      "type": ["null", "integer"]
-    },
-    "shopify_product_id": {
-      "type": ["null", "integer"]
-    },
-    "subscription_defaults": {
-      "type": ["null", "object"],
-      "additionalProperties": false,
-      "properties": {
-        "charge_interval_frequency": {
-          "type": ["null", "integer"]
-        },
-        "cutoff_day_of_month": {
-          "type": ["null", "string"]
-        },
-        "cutoff_day_of_week": {
-          "type": ["null", "string"]
-        },
-        "expire_after_specific_number_of_charges": {
-          "type": ["null", "integer"]
-        },
-        "handle": {
-          "type": ["null", "string"]
-        },
-        "number_charges_until_expiration": {
-          "type": ["null", "integer"]
-        },
-        "order_day_of_month": {
-          "type": ["null", "string"]
-        },
-        "order_day_of_week": {
-          "type": ["null", "string"]
-        },
-        "order_interval_frequency": {
-          "type": ["null", "integer"]
-        },
-        "order_interval_frequency_options": {
-          "anyOf": [
-            {
-              "type": "array",
-              "items": {
-                "type": "string"
+    "options": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": ["null", "string"]
+              },
+              "position": {
+                "type": ["null", "integer"]
+              },
+              "values": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "label": {
+                          "type": ["null", "string"]
+                        },
+                        "position": {
+                          "type": ["null", "integer"]
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
-            },
-            {
-              "type": "null"
             }
-          ]
+          }
         },
-        "order_interval_unit": {
-          "type": ["null", "string"]
-        },
-        "storefront_purchase_options": {
-          "type": ["null", "string"]
+        {
+          "type": "null"
         }
-      }
+      ]
+    },
+    "published_at": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "requires_shipping": {
+      "type": ["null", "boolean"]
     },
     "title": {
       "type": ["null", "string"]
     },
-    "updated_at": {
-      "type": ["null", "string"],
-      "format": "date-time"
+    "variants": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "dimensions": {
+              "type": ["null", "object"],
+              "additionalProperties": false,
+              "properties": {
+                "weight": {
+                  "type": ["null", "integer"]
+                },
+                "weight_unit": {
+                  "type": ["null", "string"]
+                }
+              }
+            },
+            "image": {
+              "type": ["null", "object"],
+              "additionalProperties": false,
+              "properties": {
+                "large": {
+                  "type": ["null", "string"]
+                },
+                "medium": {
+                  "type": ["null", "string"]
+                },
+                "original": {
+                  "type": ["null", "string"]
+                },
+                "small": {
+                  "type": ["null", "string"]
+                },
+                "sort_order": {
+                  "type": ["null", "integer"]
+                }
+              }
+            },
+            "option_values": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "label": {
+                        "type": ["null", "string"]
+                      },
+                      "position": {
+                        "type": ["null", "integer"]
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "prices": {
+              "type": ["null", "object"],
+              "additionalProperties": false,
+              "properties": {
+                "compare_at_price": {
+                  "type": ["null", "string"]
+                },
+                "unit_price": {
+                  "type": ["null", "string"]
+                }
+              }
+            },
+            "requires_shipping": {
+              "type": ["null", "boolean"]
+            },
+            "sku": {
+              "type": ["null", "string"]
+            },
+            "tax_code": {
+              "type": ["null", "string"]
+            },
+            "taxable": {
+              "type": ["null", "boolean"]
+            },
+            "title": {
+              "type": ["null", "string"]
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "vendor": {
+      "type": ["null", "string"]
     }
   }
 }
