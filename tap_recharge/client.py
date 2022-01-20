@@ -6,7 +6,7 @@ from singer import metrics, utils
 from requests.exceptions import Timeout
 
 LOGGER = singer.get_logger()
-REQUEST_TIMEOUT = 300
+REQUEST_TIMEOUT = 600
 
 class Server5xxError(Exception):
     pass
@@ -202,13 +202,54 @@ class RechargeClient:
         if response.status_code != 200:
             raise_for_error(response)
 
+        # Intermittent JSONDecodeErrors when parsing JSON; Adding 2 attempts
+        # FIRST ATTEMPT
+        with metrics.http_request_timer(endpoint) as timer:
+            response = self.__session.request(method, url, stream=True, timeout=self.request_timeout, **kwargs)
+            timer.tags[metrics.Tag.http_status_code] = response.status_code
+
+        if response.status_code >= 500:
+            raise Server5xxError()
+
+        if response.status_code == 429:
+            raise Server429Error()
+
+        if response.status_code != 200:
+            raise_for_error(response)
+
+        # Catch invalid JSON (e.g. unterminated string errors)
+        try:
+            response_json = response.json()
+            return response_json, response.links
+        except ValueError as err:  # includes simplejson.decoder.JSONDecodeError
+            LOGGER.warn(err)
+
+        # SECOND ATTEMPT, if there is a ValueError (unterminated string error)
+        with metrics.http_request_timer(endpoint) as timer:
+            response = self.__session.request(
+                method,
+                url,
+                stream=True,
+                timeout=self.request_timeout,
+                **kwargs)
+            timer.tags[metrics.Tag.http_status_code] = response.status_code
+
+        if response.status_code >= 500:
+            raise Server5xxError()
+
+        if response.status_code == 429:
+            raise Server429Error()
+
+        if response.status_code != 200:
+            raise_for_error(response)
+
         # Log invalid JSON (e.g. unterminated string errors)
         try:
             response_json = response.json()
-        except Exception as err:
+            return response_json, response.links
+        except ValueError as err:  # includes simplejson.decoder.JSONDecodeError
             LOGGER.error(err)
             raise Exception(err)
-        return response_json, response.links
 
     def get(self, path, **kwargs):
         return self.request('GET', path=path, **kwargs)

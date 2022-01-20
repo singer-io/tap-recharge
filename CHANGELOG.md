@@ -1,6 +1,9 @@
 # Changelog
 
-## 1 1.2
+## 1 1.3
+  * Minor change to improve unterminated string error handling [issue #4](https://github.com/singer-io/tap-recharge/issues/4)
+
+## 1.1.2
   * Request timeout functionality added [#19](https://github.com/singer-io/tap-recharge/pull/19)
 ## 1.1.1
   * Fix bookmark access [#17](https://github.com/stitchdata/sources-utils/pull/17)
