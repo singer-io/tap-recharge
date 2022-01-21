@@ -14,7 +14,7 @@ from tap_recharge.client import RechargeClient
 
 LOGGER = singer.get_logger()
 
-MAX_PAGE_LIMIT = 250
+MAX_PAGE_LIMIT = 50
 
 
 def get_recharge_bookmark(
