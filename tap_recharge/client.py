@@ -1,3 +1,4 @@
+import time
 import backoff
 import requests
 
@@ -160,8 +161,9 @@ class RechargeClient:
         (Timeout, Server5xxError, requests.ConnectionError, Server429Error),
         max_tries=5,
         factor=2)
-    # Call/rate limit: https://developer.rechargepayments.com/#rate-limits
-    @utils.ratelimit(120, 60)
+    # Call/rate limit: https://docs.rechargepayments.com/docs/api-rate-limits
+    # Reduced rate limit from (120, 60) to (100, 60) due to intermittent 429 errors
+    @utils.ratelimit(100, 60)
     def request(self, method, path=None, url=None, **kwargs):
         if not self.__verified:
             self.__verified = self.check_access_token()
@@ -197,6 +199,8 @@ class RechargeClient:
             raise Server5xxError()
 
         if response.status_code == 429:
+            # Delay for 5 seconds for leaky bucket rate limit algorithm
+            time.sleep(5)
             raise Server429Error()
 
         if response.status_code != 200:
@@ -212,6 +216,8 @@ class RechargeClient:
             raise Server5xxError()
 
         if response.status_code == 429:
+            # Delay for 5 seconds for leaky bucket rate limit algorithm
+            time.sleep(5)
             raise Server429Error()
 
         if response.status_code != 200:
