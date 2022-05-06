@@ -164,7 +164,7 @@ class RechargeClient:
     # Call/rate limit: https://docs.rechargepayments.com/docs/api-rate-limits
     # Reduced rate limit from (120, 60) to (100, 60) due to intermittent 429 errors
     @utils.ratelimit(100, 60)
-    def request(self, method, path=None, url=None, **kwargs):
+    def request(self, method, path=None, url=None, **kwargs): # pylint: disable=too-many-branches,too-many-statements
         if not self.__verified:
             self.__verified = self.check_access_token()
 
@@ -228,7 +228,7 @@ class RechargeClient:
             response_json = response.json()
             return response_json, response.links
         except ValueError as err:  # includes simplejson.decoder.JSONDecodeError
-            LOGGER.warn(err)
+            LOGGER.warning(err)
 
         # SECOND ATTEMPT, if there is a ValueError (unterminated string error)
         with metrics.http_request_timer(endpoint) as timer:
