@@ -134,13 +134,20 @@ class IncrementalStream(BaseStream):
         with metrics.record_counter(self.tap_stream_id) as counter:
             for record in self.get_records(config, bookmark_datetime):
                 transformed_record = transformer.transform(record, stream_schema, stream_metadata)
+                replication_value = transformed_record.get(self.replication_key)
 
-                record_datetime = utils.strptime_to_utc(transformed_record[self.replication_key])
+                # if replication value is not found then, write record
+                if replication_value:
+                    record_datetime = utils.strptime_to_utc(replication_value)
 
-                if record_datetime >= bookmark_datetime:
+                    # write record if we get record greater than the bookmark date or start date
+                    if record_datetime >= bookmark_datetime:
+                        singer.write_record(self.tap_stream_id, transformed_record)
+                        counter.increment()
+                        max_datetime = max(record_datetime, max_datetime)
+                else:
                     singer.write_record(self.tap_stream_id, transformed_record)
                     counter.increment()
-                    max_datetime = max(record_datetime, bookmark_datetime)
 
             bookmark_date = utils.strftime(max_datetime)
 
