@@ -13,14 +13,22 @@ class RechargeStartDateTest(RechargeBaseTest):
         return "tap_tester_recharge_start_date_test"
 
     def test_run(self):
+        streams = self.expected_streams()
+        # streams for 1st run
+        streams_1 = {"customers", "subscriptions", "addresses", "onetimes"}
+        self.run_test(streams_1, "2021-09-01T00:00:00Z", "2022-04-01T00:00:00Z")
+
+        self.run_test(streams - streams_1, "2021-09-01T00:00:00Z", "2021-10-01T00:00:00Z")
+
+    def run_test(self, streams, start_date_1, start_date_2):
         """Instantiate start date according to the desired data set and run the test"""
 
-        self.start_date_1 = self.get_properties().get('start_date')
-        self.start_date_2 = self.timedelta_formatted(self.start_date_1, days=31)
+        self.start_date_1 = start_date_1
+        self.start_date_2 = start_date_2
 
         self.start_date = self.start_date_1
 
-        expected_streams = self.expected_streams()
+        expected_streams = streams
         expected_replication_methods = self.expected_replication_method()
 
         ##########################################################################
