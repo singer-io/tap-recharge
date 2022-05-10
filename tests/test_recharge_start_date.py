@@ -18,7 +18,12 @@ class RechargeStartDateTest(RechargeBaseTest):
         streams_1 = {"customers", "subscriptions", "addresses", "onetimes"}
         self.run_test(streams_1, "2021-09-01T00:00:00Z", "2022-04-01T00:00:00Z")
 
-        self.run_test(streams - streams_1, "2021-09-01T00:00:00Z", "2021-10-01T00:00:00Z")
+        # streams of 2nd run
+        streams_2 = {"collections"}
+        self.run_test(streams_2, "2021-09-01T00:00:00Z", "2022-05-01T00:00:00Z")
+
+        # rest other streams for 3rd run
+        self.run_test(streams - streams_1 - streams_2, "2021-09-01T00:00:00Z", "2021-10-01T00:00:00Z")
 
     def run_test(self, streams, start_date_1, start_date_2):
         """Instantiate start date according to the desired data set and run the test"""

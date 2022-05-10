@@ -184,6 +184,11 @@ class RechargeClient:
             kwargs['headers'] = {}
         kwargs['headers']['X-Recharge-Access-Token'] = self.__access_token
         kwargs['headers']['Accept'] = 'application/json'
+        # If we did not specify any API Version during API Call, the Recharge will use the default API Version of our store
+        # the 'collections' was added as part of API Version: '2021-11', for older API Version,
+        # we will get empty records so adding 'X-Recharge-Version' for 'collections' API call
+        if path == 'collections':
+            kwargs['headers']['X-Recharge-Version'] = '2021-11'
 
         if self.__user_agent:
             kwargs['headers']['User-Agent'] = self.__user_agent
