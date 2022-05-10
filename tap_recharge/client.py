@@ -164,7 +164,7 @@ class RechargeClient:
     # Call/rate limit: https://docs.rechargepayments.com/docs/api-rate-limits
     # Reduced rate limit from (120, 60) to (100, 60) due to intermittent 429 errors
     @utils.ratelimit(100, 60)
-    def request(self, method, path=None, url=None, **kwargs):
+    def request(self, method, path=None, url=None, **kwargs): # pylint: disable=too-many-branches,too-many-statements
         if not self.__verified:
             self.__verified = self.check_access_token()
 
@@ -184,6 +184,11 @@ class RechargeClient:
             kwargs['headers'] = {}
         kwargs['headers']['X-Recharge-Access-Token'] = self.__access_token
         kwargs['headers']['Accept'] = 'application/json'
+        # If we did not specify any API Version during API Call, the Recharge will use the default API Version of our store
+        # the 'collections' was added as part of API Version: '2021-11', for older API Version,
+        # we will get empty records so adding 'X-Recharge-Version' for 'collections' API call
+        if path == 'collections':
+            kwargs['headers']['X-Recharge-Version'] = '2021-11'
 
         if self.__user_agent:
             kwargs['headers']['User-Agent'] = self.__user_agent
@@ -228,7 +233,7 @@ class RechargeClient:
             response_json = response.json()
             return response_json, response.links
         except ValueError as err:  # includes simplejson.decoder.JSONDecodeError
-            LOGGER.warn(err)
+            LOGGER.warning(err)
 
         # SECOND ATTEMPT, if there is a ValueError (unterminated string error)
         with metrics.http_request_timer(endpoint) as timer:
