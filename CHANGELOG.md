@@ -1,5 +1,7 @@
 # Changelog
 
+## 1 1 5
+  * Fix Transform Issue [#25](https://github.com/singer-io/tap-recharge/pull/25)
 ## 1.1.4
   * Minor change due to intermittent 429 errors: 1) Reduce client rate limit from 120 per 60s to 100 per 60s; 2) Add a 5s time delay/retry when 429 error occurs. [Recharge Leaky Bucket Rate Limits](https://docs.rechargepayments.com/docs/api-rate-limits)
 
