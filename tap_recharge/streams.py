@@ -468,6 +468,34 @@ class Subscriptions(CursorPagingStream):
     data_key = 'subscriptions'
 
 
+class Plans(PageBasedPagingStream):
+    """
+    Retrieves plans from the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/2021-11/plans
+    """
+    tap_stream_id = 'plans'
+    key_properties = ['id']
+    path = 'plans'
+    replication_key = 'updated_at'
+    valid_replication_keys = ['updated_at']
+    params = {'sort_by': f'{replication_key}-asc'}
+    data_key = 'plans'
+
+class PaymentMethods(PageBasedPagingStream):
+    """
+    Retrieves payment_methods from the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/2021-11/payment_methods
+    """
+    tap_stream_id = 'payment_methods'
+    key_properties = ['id']
+    path = 'payment_methods'
+    replication_key = 'updated_at'
+    valid_replication_keys = ['updated_at']
+    params = {'sort_by': f'{replication_key}-asc'}
+    data_key = 'payment_methods'
+
 STREAMS = {
     'addresses': Addresses,
     'charges': Charges,
@@ -481,5 +509,7 @@ STREAMS = {
     'orders': Orders,
     'products': Products,
     'shop': Shop,
-    'subscriptions': Subscriptions
+    'subscriptions': Subscriptions,
+    'plans': Plans,
+    'payment_methods': PaymentMethods
 }

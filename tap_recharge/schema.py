@@ -1,14 +1,15 @@
 import os
 import json
 
-from singer import metadata
+from singer import metadata, get_logger
 from tap_recharge.streams import STREAMS
 
+LOGGER = get_logger()
 
 def get_abs_path(path):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
 
-def get_schemas():
+def get_schemas(client):
     """
     Loads the schemas defined for the tap.
 
@@ -20,6 +21,23 @@ def get_schemas():
     field_metadata = {}
 
     for stream_name, stream_object in STREAMS.items():
+
+        # The Payment Methods resource is not publicly available to every Merchant at this point.
+        # Reference: https://developer.rechargepayments.com/2021-11/payment_methods/payment_methods_list
+        # Thus checking if we have access to "payment_methods"
+        params = stream_object.params
+        params.update({'limit': 1}) # add limit 1 to only fetch 1 record
+        path = stream_object.path
+        data_key = stream_object.data_key
+        # fetch a record
+        try:
+            response, _ = client.get(path, params=params)
+            response.get(data_key)
+        except Exception as err:
+            LOGGER.warning('Endpoint: {}, access error: {}'.format(stream_name, err))
+            # do not generate the schema if the user does not have the permission to get records
+            continue
+
         schema_path = get_abs_path(f'schemas/{stream_name}.json')
         with open(schema_path, encoding='utf-8') as file:
             schema = json.load(file)

@@ -187,7 +187,7 @@ class RechargeClient:
         # If we did not specify any API Version during API Call, the Recharge will use the default API Version of our store
         # the 'collections' was added as part of API Version: '2021-11', for older API Version,
         # we will get empty records so adding 'X-Recharge-Version' for 'collections' API call
-        if path == 'collections':
+        if path in ['collections', 'plans', 'payment_methods']:
             kwargs['headers']['X-Recharge-Version'] = '2021-11'
 
         if self.__user_agent:

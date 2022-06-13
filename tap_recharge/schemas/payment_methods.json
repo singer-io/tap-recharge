@@ -1,0 +1,70 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "type": ["null", "integer"]
+        },
+        "customer_id": {
+            "type": ["null", "integer"]
+        },
+        "created_at": {
+            "type": ["null", "string"],
+            "format": "date-time"
+        },
+        "default": {
+            "type": ["null", "boolean"]
+        },
+        "payment_details": {
+            "type": ["null", "object"],
+            "properties": {
+                "brand": {
+                    "type": ["null", "string"]
+                },
+                "exp_month": {
+                    "type": ["null", "string"]
+                },
+                "exp_year": {
+                    "type": ["null", "string"]
+                },
+                "last4": {
+                    "type": ["null", "string"]
+                },
+                "paypal_email": {
+                    "type": ["null", "string"]
+                },
+                "paypal_payer_id": {
+                    "type": ["null", "string"]
+                },
+                "wallet_type": {
+                    "type": ["null", "string"]
+                },
+                "funding_type": {
+                    "type": ["null", "string"]
+                }
+            }
+        },
+        "payment_type": {
+            "type": ["null", "string"]
+        },
+        "processor_customer_token": {
+            "type": ["null", "string"]
+        },
+        "processor_name": {
+            "type": ["null", "string"]
+        },
+        "processor_payment_method_token": {
+            "type": ["null", "string"]
+        },
+        "status": {
+            "type": ["null", "string"]
+        },
+        "status_reason": {
+            "type": ["null", "string"]
+        },
+        "updated_at": {
+            "type": ["null", "string"],
+            "format": "date-time"
+        }
+    }
+}
