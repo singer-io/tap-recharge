@@ -126,6 +126,16 @@ class RechargeBaseTest(unittest.TestCase):
                 self.PRIMARY_KEYS: {"id", },
                 self.REPLICATION_METHOD: self.INCREMENTAL,
                 self.REPLICATION_KEYS: {"updated_at"}
+            },
+            "plans": {
+                self.PRIMARY_KEYS: {"id", },
+                self.REPLICATION_METHOD: self.INCREMENTAL,
+                self.REPLICATION_KEYS: {"updated_at"}
+            },
+            "payment_methods": {
+                self.PRIMARY_KEYS: {"id", },
+                self.REPLICATION_METHOD: self.INCREMENTAL,
+                self.REPLICATION_KEYS: {"updated_at"}
             }
         }
 

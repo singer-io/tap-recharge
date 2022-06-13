@@ -27,14 +27,12 @@ def get_schemas(client):
         # Thus checking if we have access to "payment_methods"
         params = stream_object.params
         params.update({'limit': 1}) # add limit 1 to only fetch 1 record
-        path = stream_object.path
-        data_key = stream_object.data_key
         # fetch a record
         try:
-            response, _ = client.get(path, params=params)
-            response.get(data_key)
-        except Exception as err:
-            LOGGER.warning('Endpoint: {}, access error: {}'.format(stream_name, err))
+            response, _ = client.get(stream_object.path, params=params)
+            response.get(stream_object.data_key)
+        except AttributeError as err:
+            LOGGER.warning('Endpoint: %s, access error: %s', stream_name, err)
             # do not generate the schema if the user does not have the permission to get records
             continue
 
