@@ -132,11 +132,13 @@ class RechargeBaseTest(unittest.TestCase):
                 self.REPLICATION_METHOD: self.INCREMENTAL,
                 self.REPLICATION_KEYS: {"updated_at"}
             },
-            "payment_methods": {
-                self.PRIMARY_KEYS: {"id", },
-                self.REPLICATION_METHOD: self.INCREMENTAL,
-                self.REPLICATION_KEYS: {"updated_at"}
-            }
+            # Skip Payment Methods as in our test account it is not enabled
+            # API Response: "error": "You do not have sufficient permissions (scopes) for this object"
+            # "payment_methods": {
+            #     self.PRIMARY_KEYS: {"id", },
+            #     self.REPLICATION_METHOD: self.INCREMENTAL,
+            #     self.REPLICATION_KEYS: {"updated_at"}
+            # }
         }
 
 
