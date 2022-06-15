@@ -25,16 +25,17 @@ def get_schemas(client):
         # The Payment Methods resource is not publicly available to every Merchant at this point.
         # Reference: https://developer.rechargepayments.com/2021-11/payment_methods/payment_methods_list
         # Thus checking if we have access to "payment_methods"
-        params = stream_object.params
-        params.update({'limit': 1}) # add limit 1 to only fetch 1 record
-        # fetch a record
-        try:
-            response, _ = client.get(stream_object.path, params=params)
-            response.get(stream_object.data_key)
-        except AttributeError as err:
-            LOGGER.warning('Endpoint: %s, access error: %s', stream_name, err)
-            # do not generate the schema if the user does not have the permission to get records
-            continue
+        if stream_name == 'payment_methods':
+            params = stream_object.params
+            params.update({'limit': 1}) # add limit 1 to only fetch 1 record
+            # fetch a record
+            try:
+                response, _ = client.get(stream_object.path, params=params)
+                response.get(stream_object.data_key)
+            except AttributeError as err:
+                LOGGER.warning('Endpoint: %s, access error: %s', stream_name, err)
+                # do not generate the schema if the user does not have the permission to get records
+                continue
 
         schema_path = get_abs_path(f'schemas/{stream_name}.json')
         with open(schema_path, encoding='utf-8') as file:
