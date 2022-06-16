@@ -142,8 +142,7 @@ def get_exception_for_error_code(error_code):
     if not exception:
         if error_code >= 500:
             return Server5xxError
-        else:
-            return RechargeError
+        return RechargeError
     return exception
 
 def raise_for_error(response):
@@ -153,7 +152,7 @@ def raise_for_error(response):
 
     try:
         response_json = response.json()
-    except Exception:
+    except ValueError:
         response_json = {}
 
     error_message = response_json.get('error', response_json.get('errors'))
@@ -164,7 +163,7 @@ def raise_for_error(response):
     if error_code == 401 and 'bad authentication' in error_message:
         LOGGER.error("Your API Token has been deleted or the token is invalid.\n Please re-authenticate your connection to generate a new token and resume extraction.")
 
-    message = 'HTTP-error-code: {}, Error: {}'.format(error_code, error_message)
+    message = f'HTTP-error-code: {error_code}, Error: {error_message}'
     ex = get_exception_for_error_code(error_code)
 
     raise ex(message) from None
