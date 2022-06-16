@@ -3,6 +3,20 @@ from base import RechargeBaseTest
 
 
 class RechargeAllFieldsTest(RechargeBaseTest):
+
+
+    fields_to_remove = {
+        'collections':{
+            'name' # Field is not present in API doc
+        },
+        'charges':{
+            'browser_ip' # Field is not present in API doc at first level
+        },
+        'customers':{
+            'braintree_customer_token', # Not able to generate data
+            'paypal_customer_token' # Not able to generate data
+        }
+    }
     
     def name(self):
         return "tap_tester_recharge_all_fields_test"   
@@ -76,4 +90,5 @@ class RechargeAllFieldsTest(RechargeBaseTest):
                     if message['action'] == 'upsert':
                         actual_all_keys.update(message['data'].keys())
 
+                expected_all_keys = expected_all_keys - self.fields_to_remove.get(stream,set())
                 self.assertSetEqual(expected_all_keys, actual_all_keys)
