@@ -64,8 +64,7 @@ class TestRechargeAPIResponseException(unittest.TestCase):
             response_json, _ = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(str(e.exception), 'HTTP-error-code: 401, Error: bad authentication')
-        mocked_logger_error.assert_called_with("Your API Token has been deleted or the token is invalid.\nPlease re-authenticate \
-            your connection to generate a new token and resume extraction.")
+        mocked_logger_error.assert_called_with("Your API Token has been deleted or the token is invalid.\n Please re-authenticate your connection to generate a new token and resume extraction.")
 
     def test_402_error_API_error(self, mocked_request, mocked_sleep, mocked_check_token):
         """Test case to verify we get error message as displayed in the API response for 402 error"""

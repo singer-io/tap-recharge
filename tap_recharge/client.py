@@ -162,8 +162,7 @@ def raise_for_error(response):
         error_message = ERROR_CODE_EXCEPTION_MAPPING.get(error_code, {}).get('message', 'Unknown Error')
 
     if error_code == 401 and 'bad authentication' in error_message:
-        LOGGER.error("Your API Token has been deleted or the token is invalid.\nPlease re-authenticate \
-            your connection to generate a new token and resume extraction.")
+        LOGGER.error("Your API Token has been deleted or the token is invalid.\n Please re-authenticate your connection to generate a new token and resume extraction.")
 
     message = 'HTTP-error-code: {}, Error: {}'.format(error_code, error_message)
     ex = get_exception_for_error_code(error_code)
