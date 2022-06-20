@@ -145,6 +145,59 @@
     },
     "zip": {
       "type": ["null", "string"]
+    },
+    "payment_method_id": {
+      "type": ["null", "integer"]
+    },
+    "country_code": {
+      "type": ["null", "string"]
+    },
+    "discounts": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": ["null", "integer"]
+              }
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "order_attributes": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": ["null", "string"]
+              },
+              "value": {
+                "type": ["null", "string"]
+              }
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "order_note": {
+      "type": ["null", "string"]
+    },
+    "presentment_currency": {
+      "type": ["null", "string"]
     }
   }
 }

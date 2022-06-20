@@ -115,6 +115,70 @@
     },
     "variant_title": {
       "type": ["null", "string"]
+    },
+    "analytics_data": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "utm_params": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "utm_campaign": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_content": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_data_source": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_medium": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_source": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_term": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_timestamp": {
+                    "type": ["null", "string"]
+                  }
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "external_product_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "external_variant_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "is_prepaid": {
+      "type": ["null", "boolean"]
     }
   }
 }

@@ -72,6 +72,15 @@
     },
     "variant_title": {
       "type": ["null", "string"]
+    },
+    "external_product_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
     }
   }
 }
