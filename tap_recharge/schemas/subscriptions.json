@@ -29,7 +29,7 @@
       "type": ["null", "integer"]
     },
     "has_queued_charges": {
-      "type": ["null", "integer"]
+      "type": ["null", "boolean"]
     },
     "id": {
       "type": ["null", "integer"]
@@ -41,27 +41,26 @@
       "type": ["null", "boolean"]
     },
     "max_retries_reached": {
-      "type": ["null", "integer"]
+      "type": ["null", "boolean"]
     },
     "next_charge_scheduled_at": {
       "type": ["null", "string"],
       "format": "date-time"
     },
     "order_day_of_month": {
-      "type": ["null", "string"]
+      "type": ["null", "integer"]
     },
     "order_day_of_week": {
-      "type": ["null", "string"]
+      "type": ["null", "integer"]
     },
     "order_interval_frequency": {
-      "type": ["null", "string"]
+      "type": ["null", "integer"]
     },
     "order_interval_unit": {
       "type": ["null", "string"]
     },
     "price": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
+      "type": ["null", "string"]
     },
     "product_title": {
       "type": ["null", "string"]
@@ -104,7 +103,7 @@
       "type": ["null", "string"]
     },
     "sku_override": {
-      "type": ["null", "string"]
+      "type": ["null", "boolean"]
     },
     "status": {
       "type": ["null", "string"]
