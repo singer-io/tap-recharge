@@ -42,6 +42,9 @@
         "iana_name": {
           "type": ["null", "string"]
         },
+        "iana_timezone": {
+          "type": ["null", "string"]
+        },
         "name": {
           "type": ["null", "string"]
         }
