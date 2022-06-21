@@ -48,13 +48,13 @@
       "format": "date-time"
     },
     "order_day_of_month": {
-      "type": ["null", "integer"]
+      "type": ["null", "string"]
     },
     "order_day_of_week": {
-      "type": ["null", "integer"]
+      "type": ["null", "string"]
     },
     "order_interval_frequency": {
-      "type": ["null", "integer"]
+      "type": ["null", "string"]
     },
     "order_interval_unit": {
       "type": ["null", "string"]
