@@ -92,6 +92,19 @@
         },
         "storefront_purchase_options": {
           "type": ["null", "string"]
+        },
+        "modifiable_properties": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -101,6 +114,9 @@
     "updated_at": {
       "type": ["null", "string"],
       "format": "date-time"
+    },
+    "handle": {
+      "type": ["null", "string"]
     }
   }
 }
