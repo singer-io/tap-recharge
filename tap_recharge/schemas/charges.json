@@ -361,7 +361,7 @@
                 "type": ["null", "string"]
               },
               "taxable": {
-                "type": ["null", "boolean"]
+                "type": ["null", "string"]
               },
               "tax_lines": {
                 "anyOf": [
@@ -611,7 +611,14 @@
       "type": ["null", "string"]
     },
     "retry_date": {
-      "type": ["null", "string"]
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "taxable": {
+      "type": ["null", "boolean"]
+    },
+    "total_weight_grams": {
+      "type": ["null", "integer"]
     }
   }
 }

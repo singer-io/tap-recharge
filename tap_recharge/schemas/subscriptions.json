@@ -179,6 +179,9 @@
     },
     "is_prepaid": {
       "type": ["null", "boolean"]
+    },
+    "presentment_currency": {
+      "type": ["null", "string"]
     }
   }
 }

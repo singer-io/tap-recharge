@@ -364,7 +364,7 @@
                 "type": ["null", "string"]
               },
               "taxable": {
-                "type": ["null", "boolean"]
+                "type": ["null", "string"]
               },
               "tax_lines": {
                 "anyOf": [
