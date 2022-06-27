@@ -38,7 +38,7 @@ class RechargeBookmarkTest(RechargeBaseTest):
         # Run in check mode
         found_catalogs = self.run_and_verify_check_mode(conn_id)
 
-        # table and field selection
+        # Table and field selection
         catalog_entries = [
             catalog
             for catalog in found_catalogs
@@ -70,10 +70,10 @@ class RechargeBookmarkTest(RechargeBaseTest):
         for stream in expected_streams:
             with self.subTest(stream=stream):
 
-                # expected values
+                # Expected values
                 expected_replication_method = expected_replication_methods[stream]
 
-                # collect information for assertions from syncs 1 & 2 base on expected values
+                # Collect information for assertions from syncs 1 & 2 base on expected values
                 first_sync_count = first_sync_record_count.get(stream, 0)
                 second_sync_count = second_sync_record_count.get(stream, 0)
                 first_sync_messages = [
@@ -135,7 +135,7 @@ class RechargeBookmarkTest(RechargeBaseTest):
                             msg="Second sync bookmark was set incorrectly, a record with a greater replication-key value was synced.",
                         )
 
-                    # verify that you get less data the 2nd time around
+                    # Verify that you get less data the 2nd time around
                     self.assertLess(
                         second_sync_count,
                         first_sync_count,
