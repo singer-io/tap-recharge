@@ -190,8 +190,8 @@ class RechargeClient:
         if path == 'collections':
             kwargs['headers']['X-Recharge-Version'] = '2021-11'
 
-        # In API Version: 2021-11, Products endpoint is only available for merchants doing a custom integration
-        # with a PIM (Product Information Management) system that isn’t Shopify or BigCommerce.
+        # In API Version: 2021-11, the Products endpoint is only available for merchants doing a custom integration with a PIM
+        # (Product Information Management) system that isn’t Shopify or BigCommerce hence keeping API version 2021-01 for Products.
         # Documentation: https://docs.rechargepayments.com/changelog/2021-11-api-release-notes/#2-products-and-plans
         if path == 'products':
             kwargs['headers']['X-Recharge-Version'] = '2021-01'
