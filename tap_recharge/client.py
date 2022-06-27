@@ -13,10 +13,6 @@ class Server5xxError(Exception):
     pass
 
 
-class Server429Error(Exception):
-    pass
-
-
 class RechargeError(Exception):
     pass
 
@@ -52,6 +48,8 @@ class RechargeJSONObjectError(RechargeError):
 class RechargeForbiddenError(RechargeError):
     pass
 
+class RechargeRateLimitError(Exception):
+    pass
 
 class RechargeUnprocessableEntityError(RechargeError):
     pass
@@ -115,7 +113,7 @@ ERROR_CODE_EXCEPTION_MAPPING = {
         "message": "The request was made using an invalid API version.",
     },
     429: {
-        "exception": Server429Error,
+        "exception": RechargeRateLimitError,
         "message": "The request has been rate limited.",
     },
     500: {
@@ -222,7 +220,7 @@ class RechargeClient:
     # Added backoff for 5 times when Timeout error occurs
     @backoff.on_exception(
         backoff.expo,
-        (Timeout, Server5xxError, requests.ConnectionError, Server429Error),
+        (Timeout, Server5xxError, requests.ConnectionError, RechargeRateLimitError),
         max_tries=5,
         factor=2)
     # Call/rate limit: https://docs.rechargepayments.com/docs/api-rate-limits
