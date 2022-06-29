@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 from requests.exceptions import Timeout, ConnectionError
-from tap_recharge.client import RechargeClient, Server5xxError, Server429Error
+from tap_recharge.client import RechargeClient, RechargeRateLimitError, Server5xxError
 
 class MockResponse:
     def __init__(self,  status_code, json):
@@ -52,8 +52,8 @@ class TestBackoffRequest(unittest.TestCase):
 
     def test_Server429Error_error_backoff__request(self, mocked_request, mocked_sleep, mocked_check_access_token):
         """Test case to verify we backoff for 5 times for '429' error"""
-        mocked_request.side_effect = Server429Error('ratelimit error')
-        with self.assertRaises(Server429Error) as e:
+        mocked_request.side_effect = RechargeRateLimitError('ratelimit error')
+        with self.assertRaises(RechargeRateLimitError) as e:
             response_json, _ = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(mocked_request.call_count, 5)
@@ -94,8 +94,8 @@ class TestBackoffCheckAccessToken(unittest.TestCase):
 
     def test_Server429Error_error_backoff__check_access_token(self, mocked_request, mocked_sleep):
         """Test case to verify we backoff for 5 times for '429' error"""
-        mocked_request.side_effect = Server429Error('ratelimit error')
-        with self.assertRaises(Server429Error) as e:
+        mocked_request.side_effect = RechargeRateLimitError('ratelimit error')
+        with self.assertRaises(RechargeRateLimitError) as e:
             response_json, _ = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(mocked_request.call_count, 5)
