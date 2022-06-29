@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 from tap_recharge.client import RechargeClient, RechargeBadRequestError, RechargeUnauthorizedError, RechargeRequestFailedError, \
     RechargeForbiddenError, RechargeNotFoundError, RechargeMethodNotAllowedError, RechargeUnacceptableRequestError, \
-    RechargeConflictError, RechargeJSONObjectError, RechargeUnprocessableEntityError, RechargeInvalidAPI, Server429Error, \
+    RechargeConflictError, RechargeJSONObjectError, RechargeUnprocessableEntityError, RechargeInvalidAPI, RechargeRateLimitError, \
     RechargeInternalServiceError, RechargeUnimplementedResourceError, RechargeThirdPartyServiceTimeoutError, Server5xxError    
 
 class MockResponse:
@@ -151,7 +151,7 @@ class TestRechargeAPIResponseException(unittest.TestCase):
         """Test case to verify we get error message as displayed in the API response for 429 error"""
 
         mocked_request.return_value = get_response(429, {'error': 'timeout error'})
-        with self.assertRaises(Server429Error) as e:
+        with self.assertRaises(RechargeRateLimitError) as e:
             response_json, _ = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(str(e.exception), 'HTTP-error-code: 429, Error: timeout error')
@@ -311,7 +311,7 @@ class TestRechargeCustomException(unittest.TestCase):
         """Test case to verify we get custom error message for 429 error"""
 
         mocked_request.return_value = get_response(429)
-        with self.assertRaises(Server429Error) as e:
+        with self.assertRaises(RechargeRateLimitError) as e:
             response_json, _ = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(str(e.exception), 'HTTP-error-code: 429, Error: The request has been rate limited.')
