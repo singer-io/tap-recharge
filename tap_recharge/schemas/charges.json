@@ -38,6 +38,9 @@
         },
         "zip": {
           "type": ["null", "string"]
+        },
+        "country_code": {
+          "type": ["null", "string"]
         }
       }
     },

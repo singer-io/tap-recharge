@@ -129,6 +129,9 @@
                   },
                   "small": {
                     "type": ["null", "string"]
+                  },
+                  "sort_order": {
+                    "type": ["null", "integer"]
                   }
                 }
               },
