@@ -74,6 +74,9 @@
     },
     "weight_unit": {
       "type": ["null", "string"]
+    },
+    "default_api_version": {
+      "type": ["null", "string"]
     }
   }
 }
