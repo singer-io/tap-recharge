@@ -247,12 +247,10 @@ class CursorPagingStream(IncrementalStream):
         url = None
 
         while paging:
-            records, links = self.client.get(path, url=url, params=self.params)
+            records, _ = self.client.get(path, url=url, params=self.params)
 
-            if links.get('next'):
-                path = None
-                self.params = None
-                url = links.get('next', {}).get('url')
+            if records.get('next_cursor'):
+                self.params = {'cursor': records.get('next_cursor'), 'limit': MAX_PAGE_LIMIT}
             else:
                 paging = False
 
@@ -304,7 +302,7 @@ class Collections(CursorPagingStream):
     data_key = 'collections'
 
 
-class Customers(PageBasedPagingStream):
+class Customers(CursorPagingStream):
     """
     Retrieves customers from the Recharge API.
 
@@ -334,7 +332,7 @@ class Discounts(CursorPagingStream):
     data_key = 'discounts'
 
 
-class MetafieldsStore(PageBasedPagingStream):
+class MetafieldsStore(CursorPagingStream):
     """
     Retrieves store metafields from the Recharge API.
 
@@ -352,7 +350,7 @@ class MetafieldsStore(PageBasedPagingStream):
     data_key = 'metafields'
 
 
-class MetafieldsCustomer(PageBasedPagingStream):
+class MetafieldsCustomer(CursorPagingStream):
     """
     Retrieves customer metafields from the Recharge API.
 
@@ -370,7 +368,7 @@ class MetafieldsCustomer(PageBasedPagingStream):
     data_key = 'metafields'
 
 
-class MetafieldsSubscription(PageBasedPagingStream):
+class MetafieldsSubscription(CursorPagingStream):
     """
     Retrieves subscription metafields from the Recharge API.
 
