@@ -147,4 +147,4 @@ class TestRequestTimeoutValue(unittest.TestCase):
         client = RechargeClient(**config)
         client.request("GET", "dummy_path")
         
-        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=100.8, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'User-Agent': 'dummy_ua'})
+        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=100.8, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'})
