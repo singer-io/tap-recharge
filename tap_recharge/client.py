@@ -186,7 +186,10 @@ class RechargeClient:
         kwargs['headers']['Accept'] = 'application/json'
         kwargs['headers']['X-Recharge-Version'] = '2021-11'
         # Products and Shop are not supported in new version: 2021-11
-        if path in ['products', 'shop']:
+        # For 'Onetimes', for the new version: 2021-11, we can only get active onetimes.
+        # To get all the onetimes, we need to pass the 'include_cancelled' param, but as per the discussion with support,
+        # the param is not working, thus using the old version: 2021-01
+        if path in ['products', 'shop', 'onetimes']:
             kwargs['headers']['X-Recharge-Version'] = '2021-01'
 
         if self.__user_agent:
