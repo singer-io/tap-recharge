@@ -249,6 +249,9 @@ class CursorPagingStream(IncrementalStream):
         while paging:
             records, _ = self.client.get(path, url=url, params=self.params)
 
+            # As per the documentation: https://developer.rechargepayments.com/2021-11/cursor_pagination,
+            # The next cursor is replicated in the API response, and we need to set the
+            # 'cursor' param with that value for getting the next page value
             if records.get('next_cursor'):
                 self.params = {'cursor': records.get('next_cursor'), 'limit': MAX_PAGE_LIMIT}
             else:
