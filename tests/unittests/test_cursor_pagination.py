@@ -3,19 +3,15 @@ from unittest import mock
 from tap_recharge.client import RechargeClient
 from tap_recharge.streams import Addresses
 
-COUNTER = 0
-
-def get(*args, **kwargs):
+def get(page, *args, **kwargs):
     """
         Function to return API response with 'next_cursor' for 2 responses and last response without 'next_cursor'
     """
-    global COUNTER
-    COUNTER += 1
-    if COUNTER == 3:
-        return {'next_cursor': None, 'addresses': [{'key': 'value'}]}, {}
-    return {'next_cursor': f'next_cursor_{COUNTER}', 'addresses': [{'key': 'value'}]}, {}
+    if page == 3:
+        return {'next_cursor': None, 'addresses': [{'key': 'value'}]}
+    return {'next_cursor': f'next_cursor_{page}', 'addresses': [{'key': 'value'}]}
 
-@mock.patch('tap_recharge.RechargeClient.request', side_effect = get)
+@mock.patch('tap_recharge.RechargeClient.request', side_effect = [get(1), get(2), get(3)])
 class TestCursorPagination(unittest.TestCase):
     """
         Test case to verify we are doing API calls when we receive 'next_cursor' in API response

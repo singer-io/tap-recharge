@@ -221,7 +221,7 @@ class PageBasedPagingStream(IncrementalStream):
         result_size = MAX_PAGE_LIMIT
 
         while result_size == MAX_PAGE_LIMIT:
-            records, _ = self.client.get(self.path, params=self.params)
+            records = self.client.get(self.path, params=self.params)
 
             result_size = len(records.get(self.data_key))
             page += 1
@@ -247,7 +247,7 @@ class CursorPagingStream(IncrementalStream):
         url = None
 
         while paging:
-            records, _ = self.client.get(path, url=url, params=self.params)
+            records = self.client.get(path, url=url, params=self.params)
 
             # As per the documentation: https://developer.rechargepayments.com/2021-11/cursor_pagination,
             # The next cursor is replicated in the API response, and we need to set the
@@ -449,7 +449,7 @@ class Shop(FullTableStream):
             self,
             bookmark_datetime: datetime = None,
             is_parent: bool = False) -> Iterator[list]:
-        records, _ = self.client.get(self.path)
+        records = self.client.get(self.path)
 
         return [records.get(self.data_key)]
 
