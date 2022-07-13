@@ -89,6 +89,8 @@ class TestRequestTimeoutValue(unittest.TestCase):
     '''
     Test that request timeout parameter works properly in various cases
     '''
+    expected_URL = 'https://api.rechargeapps.com/dummy_path'
+    expected_headers = {'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'}
     @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
     @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
     def test_config_provided_request_timeout(self, mock_get, mock_request):
@@ -99,7 +101,7 @@ class TestRequestTimeoutValue(unittest.TestCase):
         client = RechargeClient(**config)
         client.request("GET", "dummy_path")
         
-        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=100.0, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'})
+        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=100.0, headers=self.expected_headers)
 
     @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
     @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
@@ -111,7 +113,7 @@ class TestRequestTimeoutValue(unittest.TestCase):
         client = RechargeClient(**config)
         client.request("GET", "dummy_path")
         
-        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=600, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'})
+        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=600, headers=self.expected_headers)
 
     @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
     @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
@@ -123,7 +125,7 @@ class TestRequestTimeoutValue(unittest.TestCase):
         client = RechargeClient(**config)
         client.request("GET", "dummy_path")
         
-        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=600.0, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'})
+        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=600.0, headers=self.expected_headers)
 
     @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
     @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
@@ -135,7 +137,7 @@ class TestRequestTimeoutValue(unittest.TestCase):
         client = RechargeClient(**config)
         client.request("GET", "dummy_path")
         
-        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=100.0, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'})
+        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=100.0, headers=self.expected_headers)
 
     @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
     @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
@@ -147,4 +149,4 @@ class TestRequestTimeoutValue(unittest.TestCase):
         client = RechargeClient(**config)
         client.request("GET", "dummy_path")
         
-        mock_request.assert_called_with('GET', 'https://api.rechargeapps.com/dummy_path', stream=True, timeout=100.8, headers={'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'})
+        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=100.8, headers=self.expected_headers)
