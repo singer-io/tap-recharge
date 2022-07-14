@@ -7,17 +7,17 @@ class RechargeAllFieldsTest(RechargeBaseTest):
 
     fields_to_remove = {
         'collections':{
-            'name' # Field is not present in API doc
+            'name' # Not able to generate data
         },
         'charges':{
-            'browser_ip' # Field is not present in API doc at first level
+            'browser_ip' # Not able to generate data
         },
         'customers':{
             'braintree_customer_token', # Not able to generate data
             'paypal_customer_token' # Not able to generate data
         }
     }
-    
+
     def name(self):
         return "tap_tester_recharge_all_fields_test"   
 
@@ -27,15 +27,15 @@ class RechargeAllFieldsTest(RechargeBaseTest):
         • Verify that more than just the automatic fields are replicated for each stream. 
         • verify all fields for each stream are replicated
         """
-        
+
         # Streams to verify all fields tests
         expected_streams = self.expected_streams()
 
         expected_automatic_fields = self.expected_automatic_fields()
-        
+
         # Instantiate connection
         conn_id = connections.ensure_connection(self)
-        
+
         # Instantiate connection
         found_catalogs = self.run_and_verify_check_mode(conn_id)
 
@@ -57,7 +57,7 @@ class RechargeAllFieldsTest(RechargeBaseTest):
                                           if md_entry['breadcrumb'] != []]
             stream_to_all_catalog_fields[stream_name] = set(
                 fields_from_field_level_md)
-        
+
         # Run initial sync
         record_count_by_stream = self.run_and_verify_sync(conn_id)
         synced_records = runner.get_records_from_target_output()
@@ -65,8 +65,8 @@ class RechargeAllFieldsTest(RechargeBaseTest):
         # Verify no unexpected streams were replicated
         synced_stream_names = set(synced_records.keys())
         self.assertSetEqual(expected_streams, synced_stream_names)
-        
-        
+
+
         for stream in expected_streams:
             with self.subTest(stream=stream):
 
