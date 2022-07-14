@@ -89,64 +89,32 @@ class TestRequestTimeoutValue(unittest.TestCase):
     '''
     Test that request timeout parameter works properly in various cases
     '''
-    expected_URL = 'https://api.rechargeapps.com/dummy_path'
-    expected_headers = {'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'}
+    @mock.patch('time.sleep')
     @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
     @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
-    def test_config_provided_request_timeout(self, mock_get, mock_request):
+    def test_timeout_value(self, mock_get, mock_request, mocked_sleep):
         """ 
             Unit tests to ensure that request timeout is set based on config value
         """
-        config = {"access_token": "dummy_at", "user_agent": "dummy_ua", "request_timeout": 100}
-        client = RechargeClient(**config)
-        client.request("GET", "dummy_path")
-        
-        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=100.0, headers=self.expected_headers)
-
-    @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
-    @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
-    def test_default_value_request_timeout(self, mock_get, mock_request):
-        """ 
-            Unit tests to ensure that request timeout is set based default value
-        """
         config = {"access_token": "dummy_at", "user_agent": "dummy_ua"}
-        client = RechargeClient(**config)
-        client.request("GET", "dummy_path")
-        
-        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=600, headers=self.expected_headers)
 
-    @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
-    @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
-    def test_config_provided_empty_request_timeout(self, mock_get, mock_request):
-        """ 
-            Unit tests to ensure that request timeout is set based on default value if empty value is given in config
-        """
-        config = {"access_token": "dummy_at", "user_agent": "dummy_ua", "request_timeout": ""}
-        client = RechargeClient(**config)
-        client.request("GET", "dummy_path")
-        
-        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=600.0, headers=self.expected_headers)
+        # list of values to timeout in the config
+        test_cases = [None, 100, "", "100", 100.8]
 
-    @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
-    @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
-    def test_config_provided_string_request_timeout(self, mock_get, mock_request):
-        """ 
-            Unit tests to ensure that request timeout is set based on config string value
-        """
-        config = {"access_token": "dummy_at", "user_agent": "dummy_ua", "request_timeout": "100"}
-        client = RechargeClient(**config)
-        client.request("GET", "dummy_path")
-        
-        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=100.0, headers=self.expected_headers)
+        # list of expected timeout value, URL and headers
+        expected_cases = [600, 100, 600, 100, 100.8]
+        expected_URL = 'https://api.rechargeapps.com/dummy_path'
+        expected_headers = {'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'}
 
-    @mock.patch('tap_recharge.client.requests.Session.request', return_value = MockResponse("", status_code=200))
-    @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
-    def test_config_provided_float_request_timeout(self, mock_get, mock_request):
-        """ 
-            Unit tests to ensure that request timeout is set based on config float value
-        """
-        config = {"access_token": "dummy_at", "user_agent": "dummy_ua", "request_timeout": 100.8}
-        client = RechargeClient(**config)
-        client.request("GET", "dummy_path")
-        
-        mock_request.assert_called_with('GET', self.expected_URL, stream=True, timeout=100.8, headers=self.expected_headers)
+        for test_case, expected_case in zip(test_cases, expected_cases):
+            # set timeout in the config
+            config["request_timeout"] = test_case
+
+            # Remove "request_timeout" form config, if the value to be passed is "None"
+            if not test_case:
+                config.pop("request_timeout")
+
+            client = RechargeClient(**config)
+            client.request("GET", "dummy_path")
+
+            mock_request.assert_called_with('GET', expected_URL, stream=True, timeout=expected_case, headers=expected_headers)
