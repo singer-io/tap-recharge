@@ -233,7 +233,7 @@ class RechargeClient:
         # Catch invalid JSON (e.g. unterminated string errors)
         try:
             response_json = response.json()
-            return response_json, response.links
+            return response_json
         except ValueError as err:  # includes simplejson.decoder.JSONDecodeError
             LOGGER.warning(err)
 
@@ -259,7 +259,7 @@ class RechargeClient:
         # Log invalid JSON (e.g. unterminated string errors)
         try:
             response_json = response.json()
-            return response_json, response.links
+            return response_json
         except ValueError as err:  # includes simplejson.decoder.JSONDecodeError
             LOGGER.error(err)
             raise Exception(err)
