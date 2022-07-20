@@ -434,16 +434,16 @@ class Products(CursorPagingStream):
     data_key = 'products'
 
 
-class Shop(FullTableStream):
+class Store(FullTableStream):
     """
     Retrieves basic info about your store setup from the Recharge API.
 
-    Docs: https://developer.rechargepayments.com/#shop
+    Docs: https://developer.rechargepayments.com/2021-11/store
     """
-    tap_stream_id = 'shop'
+    tap_stream_id = 'store'
     key_properties = ['id']
-    path = 'shop'
-    data_key = 'shop'
+    path = 'store'
+    data_key = 'store'
 
     def get_records(
             self,
@@ -481,6 +481,6 @@ STREAMS = {
     'onetimes': Onetimes,
     'orders': Orders,
     'products': Products,
-    'shop': Shop,
+    'store': Store,
     'subscriptions': Subscriptions
 }
