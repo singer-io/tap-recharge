@@ -33,7 +33,7 @@ class TestRechargeAPIResponseException(unittest.TestCase):
         """Test case to verify we get proper resoponse for 200 error code"""
 
         mocked_request.return_value = get_response(200, {'key': 'value'})
-        response_json, _ = self.client_obj.request(self.method, self.path, self.url)
+        response_json = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(response_json, {'key': 'value'})
 
@@ -47,7 +47,7 @@ class TestRechargeAPIResponseException(unittest.TestCase):
 
         mocked_request.return_value = get_response(401, {'error': 'bad authentication'})
         with self.assertRaises(RechargeUnauthorizedError) as e:
-            response_json, _ = self.client_obj.request(self.method, self.path, self.url)
+            response_json = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(str(e.exception), 'HTTP-error-code: 401, Error: bad authentication')
         mocked_logger_error.assert_called_with("Your API Token has been deleted or the token is invalid.\n Please re-authenticate your connection to generate a new token and resume extraction.")
