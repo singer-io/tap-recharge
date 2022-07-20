@@ -449,12 +449,10 @@
       "type": ["null", "string"]
     },
     "total_refunds": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
+      "type": ["null", "string"]
     },
     "total_tax": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
+      "type": ["null", "string"]
     },
     "total_weight": {
       "type": ["null", "integer"]

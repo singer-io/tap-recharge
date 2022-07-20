@@ -23,7 +23,19 @@
       "type": ["null", "string"]
     },
     "usage_limit": {
-      "type": ["null", "integer"]
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "max_subsequent_redemptions": {
+          "type": ["null", "integer"]
+        },
+        "first_time_customer_restriction": {
+          "type": ["null", "boolean"]
+        },
+        "one_application_per_customer": {
+          "type": ["null", "string"]
+        }
+      }
     },
     "applies_to_id": {
       "type": ["null", "integer"]
