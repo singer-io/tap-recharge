@@ -10,11 +10,99 @@ class RechargeAllFieldsTest(RechargeBaseTest):
             'name' # Not able to generate data
         },
         'charges':{
-            'browser_ip' # Not able to generate data
+            'browser_ip', # Not able to generate data
+            'customer_id', # Not present in the API docs
+            'customer_hash', # Not present in the API docs
+            'discount_codes', # Not present in the API docs
+            'last_name', # Not present in the API docs
+            'processor_name', # Not present in the API docs
+            'shopify_order_id', # Not present in the API docs
+            'has_uncommited_changes', # Not present in the API docs
+            'email', # Not present in the API docs
+            'total_weight', # Not present in the API docs
+            'transaction_id', # Not present in the API docs
+            'first_name', # Not present in the API docs
+            'sub_total', # Not present in the API docs
+            'note_attributes', # Not present in the API docs
+            'shipments_count', # Not present in the API docs
         },
         'customers':{
             'braintree_customer_token', # Not able to generate data
-            'paypal_customer_token' # Not able to generate data
+            'paypal_customer_token', # Not able to generate data
+            'shopify_customer_id', # Not present in the API docs
+            'billing_province', # Not present in the API docs
+            'status', # Not present in the API docs
+            'billing_city', # Not present in the API docs
+            'billing_company', # Not present in the API docs
+            'number_active_subscriptions', # Not present in the API docs
+            'processor_type', # Not present in the API docs
+            'number_subscriptions', # Not present in the API docs
+            'reason_payment_method_not_valid', # Not present in the API docs
+            'has_card_error_in_dunning', # Not present in the API docs
+            'billing_address1', # Not present in the API docs
+            'billing_zip', # Not present in the API docs
+            'billing_phone', # Not present in the API docs
+            'billing_address2', # Not present in the API docs
+            'billing_country' # Not present in the API docs
+        },
+        'subscriptions': {
+            'recharge_product_id', # Not present in the API docs
+            'shopify_variant_id', # Not present in the API docs
+            'shopify_product_id' # Not present in the API docs
+        },
+        'addresses': {
+            'original_shipping_lines', # Not present in the API docs
+            'discount_id', # Not present in the API docs
+            'cart_note', # Not present in the API docs
+            'country', # Not present in the API docs
+            'cart_attributes', # Not present in the API docs. 'order_attributes' is the replacement
+            'note_attributes' # Not present in the API docs
+        },
+        'discounts': {
+            'applies_to_id', # Not present in the API docs
+            'usage_limit', # Not present in the API docs
+            'duration_usage_limit', # Not present in the API docs
+            'duration', # Not present in the API docs
+            'applies_to_resource', # Not present in the API docs
+            'first_time_customer_restriction', # Not able to generate data
+            'applies_to_product_type', # Not present in the API docs
+            'times_used', # Not present in the API docs
+            'once_per_customer' # Not present in the API docs
+        },
+        'store': {
+            'shop_email', # Not present in the API docs
+            'iana_timezone', # Not present in the API docs
+            'shop_phone', # Not present in the API docs
+            'my_shopify_domain', # Not present in the API docs
+            'domain' # Not present in the API docs
+        },
+        'onetimes': {
+            'recharge_product_id', # Not present in the API docs
+            'shopify_variant_id', # Not present in the API docs
+            'status', # Not present in the API docs
+            'shopify_product_id' # Not present in the API docs
+        },
+        'orders': {
+            'hash', # Not present in the API docs
+            'shopify_order_number', # Not present in the API docs
+            'shopify_id', # Not present in the API docs
+            'note_attributes', # Not present in the API docs
+            'last_name', # Not present in the API docs
+            'email', # Not present in the API docs
+            'address_is_active', # Not present in the API docs
+            'discount_codes', # Not present in the API docs
+            'transaction_id', # Not present in the API docs
+            'customer_id', # Not present in the API docs
+            'shopify_customer_id', # Not present in the API docs
+            'charge_id', # Not present in the API docs
+            'shipping_date', # Not present in the API docs
+            'shopify_order_id', # Not present in the API docs
+            'shopify_cart_token', # Not present in the API docs
+            'shipped_date', # Not present in the API docs
+            'charge_status', # Not present in the API docs
+            'total_weight', # Not present in the API docs
+            'first_name', # Not present in the API docs
+            'payment_processor' # Not present in the API docs
         }
     }
 
