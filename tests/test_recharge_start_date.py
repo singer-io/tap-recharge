@@ -101,6 +101,36 @@ class RechargeStartDateTest(RechargeBaseTest):
                 primary_keys_sync_2 = set(primary_keys_list_2)
 
                 if expected_replication_method == self.INCREMENTAL:
+
+                    expected_replication_key = next(
+                        iter(self.expected_replication_keys().get(stream, [])))
+                    bookmark_keys_list_1 = [row.get('data').get(expected_replication_key)
+                                            for row in synced_records_1.get(stream, {'messages': []}).get('messages', [])
+                                            if row.get('data')]
+                    bookmark_keys_list_2 = [row.get('data').get(expected_replication_key)
+                                            for row in synced_records_2.get(stream, {'messages': []}).get('messages', [])
+                                            if row.get('data')]
+
+                   # Verify bookmark key values are greater than or equal to start date of sync 1
+                    for bookmark_key_value in bookmark_keys_list_1:
+                        self.assertGreaterEqual(
+                                self.parse_date(bookmark_key_value),
+                                self.parse_date(self.start_date_1),
+                                msg="Report pertains to a date prior to our start date.\n" +
+                                "Sync start_date: {}\n".format(self.start_date_1) +
+                                "Record date: {} ".format(bookmark_key_value)
+                            )
+
+                    # Verify bookmark key values are greater than or equal to start date of sync 2
+                    for bookmark_key_value in bookmark_keys_list_2:
+                        self.assertGreaterEqual(
+                                self.parse_date(bookmark_key_value),
+                                self.parse_date(self.start_date_2),
+                                msg="Report pertains to a date prior to our start date.\n" +
+                                "Sync start_date: {}\n".format(self.start_date_2) +
+                                "Record date: {} ".format(bookmark_key_value)
+                          )
+
                     # Verify that the 1st sync with an earlier start date replicates
                     # a greater number of records as the 2nd sync.
                     self.assertGreater(record_count_sync_1, record_count_sync_2,
