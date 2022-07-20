@@ -29,7 +29,7 @@
       "type": ["null", "integer"]
     },
     "has_queued_charges": {
-      "type": ["null", "integer"]
+      "type": ["null", "boolean"]
     },
     "id": {
       "type": ["null", "integer"]
@@ -41,7 +41,7 @@
       "type": ["null", "boolean"]
     },
     "max_retries_reached": {
-      "type": ["null", "integer"]
+      "type": ["null", "boolean"]
     },
     "next_charge_scheduled_at": {
       "type": ["null", "string"],
@@ -60,8 +60,7 @@
       "type": ["null", "string"]
     },
     "price": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
+      "type": ["null", "string"]
     },
     "product_title": {
       "type": ["null", "string"]
@@ -104,7 +103,7 @@
       "type": ["null", "string"]
     },
     "sku_override": {
-      "type": ["null", "string"]
+      "type": ["null", "boolean"]
     },
     "status": {
       "type": ["null", "string"]
@@ -114,6 +113,73 @@
       "format": "date-time"
     },
     "variant_title": {
+      "type": ["null", "string"]
+    },
+    "analytics_data": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "utm_params": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "utm_campaign": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_content": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_data_source": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_medium": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_source": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_term": {
+                    "type": ["null", "string"]
+                  },
+                  "utm_timestamp": {
+                    "type": ["null", "string"]
+                  }
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "external_product_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "external_variant_id": {
+      "type": ["null", "object"],
+      "additionalProperties": false,
+      "properties": {
+        "ecommerce": {
+          "type": ["null", "string"]
+        }
+      }
+    },
+    "is_prepaid": {
+      "type": ["null", "boolean"]
+    },
+    "presentment_currency": {
       "type": ["null", "string"]
     }
   }
