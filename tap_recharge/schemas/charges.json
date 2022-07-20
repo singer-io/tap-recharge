@@ -305,8 +305,29 @@
       "type": ["null", "string"]
     },
     "tax_lines": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-08
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "price": {
+                "type": ["null", "string"]
+              },
+              "rate": {
+                "type": ["null", "string"]
+              },
+              "title": {
+                "type": ["null", "string"]
+              }
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "total_discounts": {
       "type": ["null", "string"]
