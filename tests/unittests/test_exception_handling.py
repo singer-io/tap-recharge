@@ -76,7 +76,7 @@ class TestRechargeAPIResponseException(unittest.TestCase):
     def test_API_exception_handling(self, name, test_data, expected_data, mocked_request, mocked_sleep, mocked_check_token):
         mocked_request.return_value = get_response(test_data[0], test_data[1])
         with self.assertRaises(test_data[2]) as e:
-            response_json, _ = self.client_obj.request(self.method, self.path, self.url)
+            response_json = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(str(e.exception), expected_data)
 
@@ -112,6 +112,6 @@ class TestRechargeCustomException(unittest.TestCase):
     def test_custom_exception_handling(self, name, test_data, expected_data, mocked_request, mocked_sleep, mocked_check_token):
         mocked_request.return_value = get_response(test_data[0])
         with self.assertRaises(test_data[1]) as e:
-            response_json, _ = self.client_obj.request(self.method, self.path, self.url)
+            response_json = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(str(e.exception), expected_data)
