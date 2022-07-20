@@ -88,7 +88,7 @@ class MockResponse():
 
 class TestRequestTimeoutValue(unittest.TestCase):
     '''
-    Test that request timeout parameter works properly in various cases
+    Test that the request timeout parameter works properly in various cases
     '''
     expected_URL = 'https://api.rechargeapps.com/dummy_path'
     expected_headers = {'X-Recharge-Access-Token': 'dummy_at', 'Accept': 'application/json', 'X-Recharge-Version': '2021-11', 'User-Agent': 'dummy_ua'}
