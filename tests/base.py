@@ -10,7 +10,8 @@ from datetime import datetime as dt, timedelta
 from tap_tester import connections, menagerie, runner
 
 from singer import get_logger
-
+import dateutil.parser
+import time
 
 class RechargeBaseTest(unittest.TestCase):
     """
@@ -30,6 +31,7 @@ class RechargeBaseTest(unittest.TestCase):
     FULL_TABLE = "FULL_TABLE"
     START_DATE_FORMAT = "%Y-%m-%dT00:00:00Z"
     BOOKMARK_COMPARISON_FORMAT = "%Y-%m-%dT00:00:00+00:00"
+    DATETIME_FMT = "%Y-%m-%dT%H:%M:%S.000000Z"
     LOGGER = get_logger()
 
     start_date = "2021-09-20T00:00:00Z"
@@ -118,7 +120,7 @@ class RechargeBaseTest(unittest.TestCase):
                 self.REPLICATION_METHOD: self.INCREMENTAL,
                 self.REPLICATION_KEYS: {"updated_at"}
             },
-            "shop": {
+            "store": {
                 self.PRIMARY_KEYS: {"id"},
                 self.REPLICATION_METHOD: self.FULL_TABLE
             },
@@ -312,6 +314,30 @@ class RechargeBaseTest(unittest.TestCase):
             connections.select_catalog_and_fields_via_metadata(
                 conn_id, catalog, schema, [], non_selected_properties)
 
+    def calculated_states_by_stream(self, current_state):
+        """
+        Look at the bookmarks from a previous sync and set a new bookmark
+        value that is prior. This ensures the subsequent sync will replicate
+        at least 1 record but, fewer records than the previous sync.
+        """
+
+        timedelta_by_stream = {stream: [0,0,0,5]  # {stream_name: [days, hours, minutes, seconds], ...}
+                               for stream in self.expected_streams()}
+
+        stream_to_calculated_state = {stream: "" for stream in current_state['bookmarks'].keys()}
+        for stream, state in current_state['bookmarks'].items():
+            state_as_datetime = dateutil.parser.parse(state)
+
+            days, hours, minutes, seconds = timedelta_by_stream[stream]
+            calculated_state_as_datetime = state_as_datetime - timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+
+            calculated_state_formatted = dt.strftime(calculated_state_as_datetime, self.DATETIME_FMT)
+
+            stream_to_calculated_state[stream] = calculated_state_formatted
+
+        return stream_to_calculated_state
+
+
     @staticmethod
     def parse_date(date_value):
         """
@@ -353,3 +379,7 @@ class RechargeBaseTest(unittest.TestCase):
     ##########################################################################
     ### Tap Specific Methods
     ##########################################################################
+
+    def dt_to_ts(self, dtime , format):
+        """Converts date to time-stamp"""
+        return int(time.mktime(dt.strptime(dtime, format).timetuple()))
