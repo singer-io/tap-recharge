@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1
+  * Removes deprecated `shopify_customer_id` field
+  * Re-orders customers.json
+  * Adds ipdb to dev install
+  * [#39](https://github.com/singer-io/tap-recharge/pull/39)
+
 ## 2.0.0
   * Changed Shop API [#27](https://github.com/singer-io/tap-recharge/pull/27)
   * Updated the tap to use Old API Version (2021-01) for the Products stream [#29](https://github.com/singer-io/tap-recharge/pull/29)
