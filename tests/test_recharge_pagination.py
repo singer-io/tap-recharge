@@ -22,8 +22,10 @@ class RechargePaginationTest(RechargeBaseTest):
             "customers",
             "discounts",
             "metafields_subscription",
-            "onetimes",
+            # BUG https://jira.talendforge.org/browse/TDL-20783
+            # "onetimes",
             ]
+
         found_catalogs = self.run_and_verify_check_mode(conn_id)
 
         # table and field selection
