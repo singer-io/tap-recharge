@@ -25,6 +25,7 @@ setup(name='tap-recharge',
       },
       extras_require={
           'dev': [
-              'pylint'
+              'pylint',
+              'ipdb'
           ]
       })
