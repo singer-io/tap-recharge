@@ -34,6 +34,8 @@ class RechargeStartDateTest(RechargeBaseTest):
         self.start_date = self.start_date_1
 
         expected_streams = streams
+        # BUG https://jira.talendforge.org/browse/TDL-20783
+        expected_streams = streams - {"onetimes"}
         expected_replication_methods = self.expected_replication_method()
 
         ##########################################################################

@@ -28,6 +28,8 @@ class RechargeBookmarkTest(RechargeBaseTest):
         """
 
         expected_streams = self.expected_streams()
+        # BUG https://jira.talendforge.org/browse/TDL-20783
+        expected_streams = expected_streams - {"onetimes"}
         expected_replication_keys = self.expected_replication_keys()
         expected_replication_methods = self.expected_replication_method()
 
