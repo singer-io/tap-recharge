@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.2
+  * Dependabot update [#41](https://github.com/singer-io/tap-recharge/pull/41)
+
 ## 2.0.1
   * Removes deprecated `shopify_customer_id` field
   * Re-orders customers.json
