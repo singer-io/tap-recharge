@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2
+  * Adds ChunkedEncodingError to backoff handling
+  * Adds unittest
+  * [#42](https://github.com/singer-io/tap-recharge/pull/42)
+
 ## 2.0.1
   * Removes deprecated `shopify_customer_id` field
   * Re-orders customers.json
