@@ -4,7 +4,7 @@ import requests
 
 import singer
 from singer import metrics, utils
-from requests.exceptions import Timeout
+from requests.exceptions import Timeout, ChunkedEncodingError
 
 LOGGER = singer.get_logger()
 REQUEST_TIMEOUT = 600
@@ -189,7 +189,7 @@ class RechargeClient:
     # Backoff the request for 5 times when Timeout or Connection error occurs
     @backoff.on_exception(
         backoff.expo,
-        (Timeout, requests.ConnectionError, Server5xxError),
+        (Timeout, requests.ConnectionError, Server5xxError, ChunkedEncodingError),
         max_tries=5,
         factor=2)
     def __enter__(self):
@@ -221,7 +221,7 @@ class RechargeClient:
     # Added backoff for 5 times when Timeout error occurs
     @backoff.on_exception(
         backoff.expo,
-        (Timeout, Server5xxError, requests.ConnectionError, RechargeRateLimitError),
+        (Timeout, Server5xxError, requests.ConnectionError, RechargeRateLimitError, ChunkedEncodingError),
         max_tries=5,
         factor=2)
     # Call/rate limit: https://docs.rechargepayments.com/docs/api-rate-limits
