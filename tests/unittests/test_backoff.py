@@ -3,7 +3,6 @@ from unittest import mock
 from parameterized import parameterized
 from requests.exceptions import Timeout, ConnectionError, ChunkedEncodingError
 from tap_recharge.client import RechargeClient, RechargeRateLimitError, Server5xxError
-import jsonlines
 
 class MockResponse:
     def __init__(self,  status_code, json):
