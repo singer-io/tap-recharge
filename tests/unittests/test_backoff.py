@@ -1,8 +1,9 @@
 import unittest
 from unittest import mock
 from parameterized import parameterized
-from requests.exceptions import Timeout, ConnectionError
+from requests.exceptions import Timeout, ConnectionError, ChunkedEncodingError
 from tap_recharge.client import RechargeClient, RechargeRateLimitError, Server5xxError
+import jsonlines
 
 class MockResponse:
     def __init__(self,  status_code, json):
@@ -36,6 +37,15 @@ class TestBackoffRequest(unittest.TestCase):
     def test_backoff(self, name, test_exception, data, mocked_request, mocked_sleep, mocked_check_access_token):
         mocked_request.side_effect = test_exception('exception')
         with self.assertRaises(test_exception) as e:
+            response_json, _ = self.client_obj.request(self.method, self.path, self.url)
+
+        self.assertEqual(mocked_request.call_count, 5)
+
+    @mock.patch('tap_recharge.client.RechargeClient.check_access_token')
+    @mock.patch('time.sleep')
+    @mock.patch('requests.Session.request', side_effect=ChunkedEncodingError)
+    def test_ChunkedEncodingError(self, mocked_request, mocked_sleep, mocked_check_access_token):
+        with self.assertRaises(ChunkedEncodingError) as e:
             response_json, _ = self.client_obj.request(self.method, self.path, self.url)
 
         self.assertEqual(mocked_request.call_count, 5)
