@@ -261,13 +261,6 @@ class RechargeClient:
         if method == 'POST':
             kwargs['headers']['Content-Type'] = 'application/json'
 
-        # with metrics.http_request_timer(endpoint) as timer:
-        #     response = self.__session.request(method, url, stream=True, timeout=self.request_timeout, **kwargs)
-        #     timer.tags[metrics.Tag.http_status_code] = response.status_code
-
-        # if response.status_code != 200:
-        #     raise_for_error(response)
-
         # Intermittent JSONDecodeErrors when parsing JSON; Adding 2 attempts
         # FIRST ATTEMPT
         with metrics.http_request_timer(endpoint) as timer:
