@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.3
+  * Eliminate repetition of API calls
+  * [#43](https://github.com/singer-io/tap-recharge/pull/43)
+
 ## 2.0.2
   * Adds ChunkedEncodingError to backoff handling
   * Adds unittest
