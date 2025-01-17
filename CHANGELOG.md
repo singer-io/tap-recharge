@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.4
+  * Fix Dependabot issue
+  * [#44](https://github.com/singer-io/tap-recharge/pull/44)
+
 ## 2.0.3
   * Eliminate repetition of API calls
   * [#43](https://github.com/singer-io/tap-recharge/pull/43)
