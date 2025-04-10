@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.5
+  * Remove support of page based pagination.
+  * [#45](https://github.com/singer-io/tap-recharge/pull/45)
+
 ## 2.0.4
   * Fix Dependabot issue
   * [#44](https://github.com/singer-io/tap-recharge/pull/44)
