@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.5
+## 2.1.0
   * Remove support of page based pagination.
   * [#45](https://github.com/singer-io/tap-recharge/pull/45)
 
