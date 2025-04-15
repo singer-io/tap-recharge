@@ -202,34 +202,6 @@ class FullTableStream(BaseStream):
         return state
 
 
-class PageBasedPagingStream(IncrementalStream):
-    """
-    A generic page based pagination implementation for the Recharge API.
-
-    Docs: https://developer.rechargepayments.com/?python#page-based-pagination
-    """
-
-    def get_records(
-            self,
-            bookmark_datetime: datetime = None,
-            is_parent: bool = False) -> Iterator[list]:
-        page = 1
-        self.params.update({
-            'limit': MAX_PAGE_LIMIT,
-            'page': page
-            })
-        result_size = MAX_PAGE_LIMIT
-
-        while result_size == MAX_PAGE_LIMIT:
-            records = self.client.get(self.path, params=self.params)
-
-            result_size = len(records.get(self.data_key))
-            page += 1
-            self.params.update({'page': page})
-
-            yield from records.get(self.data_key)
-
-
 class CursorPagingStream(IncrementalStream):
     """
     A generic cursor pagination implemantation for the Recharge API.
@@ -389,7 +361,7 @@ class MetafieldsSubscription(CursorPagingStream):
     data_key = 'metafields'
 
 
-class Onetimes(PageBasedPagingStream):
+class Onetimes(CursorPagingStream):
     """
     Retrieves non-recurring line items on queued orders from the Recharge API.
 
