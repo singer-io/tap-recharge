@@ -22,6 +22,10 @@ class RechargeStartDateTest(RechargeBaseTest):
         streams_2 = {"collections"}
         self.run_test(streams_2, "2021-09-01T00:00:00Z", "2022-05-01T00:00:00Z")
 
+        # streams of 3rd run
+        streams_2 = {"plans"}
+        self.run_test(streams_2, "2021-09-01T00:00:00Z", "2024-06-16T00:00:00Z")
+
         # rest other streams for 3rd run
         self.run_test(streams - streams_1 - streams_2, "2021-09-01T00:00:00Z", "2021-10-01T00:00:00Z")
 
