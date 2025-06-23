@@ -40,6 +40,6 @@ def sync(
                 transformer)
             singer.write_state(state)
 
-    LOGGER.info("Recharge plans to deprecate products stream by June 30, 2025. It is recommended to use the plans stream instead to achieve equivalent functionality")
+    LOGGER.warning("Recharge plans to deprecate products stream by June 30, 2025. It is recommended to use the plans stream instead to achieve equivalent functionality.")
     state = singer.set_currently_syncing(state, None)
     singer.write_state(state)
