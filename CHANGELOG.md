@@ -3,6 +3,7 @@
 ## 2.2.0
   * Replace products with the plans stream. [#46](https://github.com/singer-io/tap-recharge/pull/46)
   * Add bookmark query filter to reduce unnecessary API calls.
+  * Bump requests version to 2.32.4
 
 ## 2.1.0
   * Remove support of page based pagination.
