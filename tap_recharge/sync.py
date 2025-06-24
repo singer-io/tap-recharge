@@ -13,6 +13,7 @@ def sync(
         catalog: Catalog) -> dict:
     """Sync data from tap source"""
 
+    is_product_selected = False
     with Transformer() as transformer:
         for stream in catalog.get_selected_streams(state):
             tap_stream_id = stream.tap_stream_id
@@ -40,6 +41,13 @@ def sync(
                 transformer)
             singer.write_state(state)
 
-    LOGGER.warning("Recharge plans to deprecate products stream by June 30, 2025. It is recommended to use the plans stream instead to achieve equivalent functionality.")
+            if "products" == tap_stream_id:
+                is_product_selected = True
     state = singer.set_currently_syncing(state, None)
     singer.write_state(state)
+
+    if is_product_selected:
+        raise Exception(
+            "Recharge plans to deprecate `products` stream by June 30, 2025. " \
+            "It is recommended to use the `plans` stream instead to achieve equivalent functionality."
+        )
