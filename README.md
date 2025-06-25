@@ -17,6 +17,7 @@ This tap:
   - [One-time Products](https://developer.rechargepayments.com/#list-onetimes)
   - [Orders](https://developer.rechargepayments.com/#list-orders)
   - [Products](https://developer.rechargepayments.com/#list-products)
+  - [Plans](https://developer.rechargepayments.com/2021-11/plans/plans_list)
   - [Store](https://developer.rechargepayments.com/2021-11/store/store_retrieve)
   - [Subscriptions](https://developer.rechargepayments.com/#list-subscriptions)
 - Outputs the schema for each resource
@@ -117,6 +118,16 @@ This tap:
 - Primary keys: id
 - Foreign keys: collection_id (collections), shopify_product_id
 - Replication strategy: Incremental (query all, filter results)
+  - Bookmark query parameter: updated_at_min
+  - Bookmark: updated_at (date-time)
+- Transformations: None
+
+[**plans**](https://developer.rechargepayments.com/2021-11/plans)
+- Endpoint: https://developer.rechargepayments.com/2021-11/plans/plans_list
+- Primary keys: id
+- Foreign keys: collection_id (collections), shopify_product_id
+- Replication strategy: Incremental (query filtered)
+  - Bookmark query parameter: updated_at_min
   - Bookmark: updated_at (date-time)
 - Transformations: None
 
@@ -189,6 +200,7 @@ This tap:
             "onetimes": "2019-06-20T00:52:46",
             "orders": "2019-06-19T19:48:44Z",
             "products": "2019-06-11T13:37:55Z",
+            "plans": "2019-06-11T13:37:55Z",
             "subscriptions": "2019-06-18T18:23:58Z"
         }
     }
@@ -256,6 +268,7 @@ This tap:
     | store                   | 1       | 1       |
     | charges                 | 4       | 1       |
     | products                | 4       | 1       |
+    | plans                   | 4       | 1       |
     | onetimes                | 0       | 1       |
     | orders                  | 4       | 1       |
     | collections             | 1       | 1       |

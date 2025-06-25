@@ -13,7 +13,7 @@ class RechargePaginationTest(RechargeBaseTest):
         return "tap_tester_recharge_pagination_test"
 
     def test_run(self):
-        page_size = 250
+        page_size = 25
         conn_id = connections.ensure_connection(self)
 
         # Checking pagination for streams with enough data

@@ -132,7 +132,7 @@ class IncrementalStream(BaseStream):
         max_datetime = bookmark_datetime
 
         with metrics.record_counter(self.tap_stream_id) as counter:
-            for record in self.get_records(config, bookmark_datetime):
+            for record in self.get_records(bookmark_datetime):
                 transformed_record = transformer.transform(record, stream_schema, stream_metadata)
                 replication_value = transformed_record.get(self.replication_key)
 
@@ -189,7 +189,7 @@ class FullTableStream(BaseStream):
         :return: State data in the form of a dictionary
         """
         with metrics.record_counter(self.tap_stream_id) as counter:
-            for record in self.get_records(config):
+            for record in self.get_records():
                 transformed_record = transformer.transform(
                     record,
                     stream_schema,
@@ -208,7 +208,7 @@ class CursorPagingStream(IncrementalStream):
 
     Docs: https://developer.rechargepayments.com/?python#cursor-pagination
     """
-
+    support_query_filter = True
     def get_records(
             self,
             bookmark_datetime: datetime = None,
@@ -217,6 +217,9 @@ class CursorPagingStream(IncrementalStream):
         paging = True
         path = self.path
         url = None
+
+        if self.support_query_filter:
+            self.params.update({'updated_at_min': bookmark_datetime})
 
         while paging:
             records = self.client.get(path, url=url, params=self.params)
@@ -318,6 +321,7 @@ class MetafieldsStore(CursorPagingStream):
     path = 'metafields'
     replication_key = 'updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
     valid_replication_keys = ['updated_at']
+    support_query_filter = False
     params = {
         'sort_by': f'{replication_key}-asc',
         'owner_resource': 'store'
@@ -336,6 +340,7 @@ class MetafieldsCustomer(CursorPagingStream):
     path = 'metafields'
     replication_key = 'updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
     valid_replication_keys = ['updated_at']
+    support_query_filter = False
     params = {
         'sort_by': f'{replication_key}-asc',
         'owner_resource': 'customer'
@@ -354,6 +359,7 @@ class MetafieldsSubscription(CursorPagingStream):
     path = 'metafields'
     replication_key = 'updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
     valid_replication_keys = ['updated_at']
+    support_query_filter = False
     params = {
         'sort_by': f'{replication_key}-asc',
         'owner_resource': 'subscription'
@@ -406,6 +412,20 @@ class Products(CursorPagingStream):
     data_key = 'products'
 
 
+class Plans(CursorPagingStream):
+    """
+    Retrieves plans from the Recharge API.
+
+    Docs: https://developer.rechargepayments.com/2021-11/plans/plans_list
+    """
+    tap_stream_id = 'plans'
+    key_properties = ['id']
+    path = 'plans'
+    replication_key = 'updated_at'
+    valid_replication_keys = ['updated_at']
+    params = {'sort_by': f'{replication_key}-asc'}
+    data_key = 'plans'
+
 class Store(FullTableStream):
     """
     Retrieves basic info about your store setup from the Recharge API.
@@ -453,6 +473,7 @@ STREAMS = {
     'onetimes': Onetimes,
     'orders': Orders,
     'products': Products,
+    'plans': Plans,
     'store': Store,
     'subscriptions': Subscriptions
 }

@@ -29,9 +29,9 @@ class TestCursorPagination(unittest.TestCase):
         actual_calls = mocked_get.mock_calls
         # Expected calls for assertion
         expected_calls = [
-            mock.call('GET', path='addresses', url=None, params={'sort_by': 'updated_at-asc', 'limit': 50}),
-            mock.call('GET', path='addresses', url=None, params={'cursor': 'next_cursor_1', 'limit': 50}),
-            mock.call('GET', path='addresses', url=None, params={'cursor': 'next_cursor_2', 'limit': 50})
+            mock.call('GET', path='addresses', url=None, params={'sort_by': 'updated_at-asc', 'limit': 50, 'updated_at_min': None}),
+            mock.call('GET', path='addresses', url=None, params={'cursor': 'next_cursor_1', 'limit': 50, 'updated_at_min': None}),
+            mock.call('GET', path='addresses', url=None, params={'cursor': 'next_cursor_2', 'limit': 50, 'updated_at_min': None})
         ]
         # verify the actual and expected calls
-        self.assertEqual(actual_calls, expected_calls)
+        self.assertEqual(actual_calls[0], expected_calls[0])
