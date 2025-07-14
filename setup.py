@@ -9,9 +9,9 @@ setup(name='tap-recharge',
       classifiers=['Programming Language :: Python :: 3 :: Only'],
       py_modules=['tap_recharge'],
       install_requires=[
-          'backoff==1.8.0',
+          'backoff==1.10.0',
           'requests==2.32.4',
-          'singer-python==5.10.0'
+          'singer-python==5.13.2'
       ],
       entry_points='''
           [console_scripts]
