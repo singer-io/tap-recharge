@@ -397,21 +397,6 @@ class Orders(CursorPagingStream):
     data_key = 'orders'
 
 
-class Products(CursorPagingStream):
-    """
-    Retrieves products from the Recharge API.
-
-    Docs: https://developer.rechargepayments.com/#list-products
-    """
-    tap_stream_id = 'products'
-    key_properties = ['id']
-    path = 'products'
-    replication_key = 'updated_at' # pseudo-incremental; doesn't support `updated_at_min` param
-    valid_replication_keys = ['updated_at']
-    params = {'sort_by': f'{replication_key}-asc'}
-    data_key = 'products'
-
-
 class Plans(CursorPagingStream):
     """
     Retrieves plans from the Recharge API.
@@ -472,7 +457,6 @@ STREAMS = {
     'metafields_subscription': MetafieldsSubscription,
     'onetimes': Onetimes,
     'orders': Orders,
-    'products': Products,
     'plans': Plans,
     'store': Store,
     'subscriptions': Subscriptions
