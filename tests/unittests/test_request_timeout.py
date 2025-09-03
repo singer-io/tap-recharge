@@ -18,7 +18,7 @@ class TestBackoffError(unittest.TestCase):
         client = RechargeClient("dummy_access_token", "dummy_user_agent", 300)
         with self.assertRaises(Timeout):
             client.request("GET")
-        self.assertEquals(mock_request.call_count, 5)
+        self.assertEqual(mock_request.call_count, 5)
 
     @mock.patch('tap_recharge.client.requests.Session.request')
     def test_check_access_token_timeout_and_backoff(self, mocked_request):
@@ -41,7 +41,7 @@ class TestBackoffError(unittest.TestCase):
         except Timeout:
             pass
         # verify that we backoff for 5 times
-        self.assertEquals(mocked_request.call_count, 5)
+        self.assertEqual(mocked_request.call_count, 5)
 
     @mock.patch('tap_recharge.client.requests.Session.request')
     def test_check_access_token_connection_error_and_backoff(self, mocked_request):
@@ -64,7 +64,7 @@ class TestBackoffError(unittest.TestCase):
         except ConnectionError:
             pass
         # verify that we backoff for 5 times
-        self.assertEquals(mocked_request.call_count, 5)
+        self.assertEqual(mocked_request.call_count, 5)
 
 class MockResponse():
     '''
