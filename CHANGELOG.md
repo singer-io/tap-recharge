@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.0
+## 3.0.0
   * Remove deprecated `projects` stream [#51](https://github.com/singer-io/tap-recharge/pull/51)
 
 ## 2.2.1
