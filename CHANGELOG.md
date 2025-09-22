@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.3.0
+  * Remove deprecated `projects` stream [#51](https://github.com/singer-io/tap-recharge/pull/51)
+
 ## 2.2.1
   * Bump dependency versions for twistlock compliance [#47](https://github.com/singer-io/tap-recharge/pull/47)
 
