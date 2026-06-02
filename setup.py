@@ -3,14 +3,14 @@
 from setuptools import setup, find_packages
 
 setup(name='tap-recharge',
-      version='3.0.0',
+      version='3.0.1',
       description='Singer.io tap for extracting data from the ReCharge Payments API 2.0',
       author='jeff.huth@bytecode.io',
       classifiers=['Programming Language :: Python :: 3 :: Only'],
       py_modules=['tap_recharge'],
       install_requires=[
           'backoff==1.10.0',
-          'requests==2.32.4',
+          'requests==2.33.0',
           'singer-python==5.13.2'
       ],
       entry_points='''

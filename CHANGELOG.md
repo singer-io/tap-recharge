@@ -1,5 +1,9 @@
 # Changelog
 
+# 3.0.1
+  * Bump requests to 2.33.0 for security updates [#53](https://github.com/singer-io/tap-recharge/pull/53)
+
+
 ## 3.0.0
   * Remove deprecated `projects` stream [#51](https://github.com/singer-io/tap-recharge/pull/51)
 
