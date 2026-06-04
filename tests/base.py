@@ -27,6 +27,7 @@ class RechargeBaseTest(unittest.TestCase):
     FOREIGN_KEYS = "table-foreign-key-properties"
     REPLICATION_METHOD = "forced-replication-method"
     API_LIMIT = "max-row-limit"
+    IS_FORBIDDEN_STREAM = "is-forbidden-stream"
     INCREMENTAL = "INCREMENTAL"
     FULL_TABLE = "FULL_TABLE"
     START_DATE_FORMAT = "%Y-%m-%dT00:00:00Z"
@@ -132,8 +133,8 @@ class RechargeBaseTest(unittest.TestCase):
         }
 
 
-    def expected_stream_names(self):
-        """The expected stream names and exclude forbidden streams."""
+    def expected_streams(self):
+        """A set of expected stream names, excluding forbidden streams."""
         return {
             stream_name
             for stream_name, metadata in self.expected_metadata().items()
