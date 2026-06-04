@@ -1,7 +1,7 @@
 # Changelog
 
 ## 3.1.0
-  * Streams the credentials cannot access (403) are now excluded from the catalog during discovery instead of raising an error.
+  * Streams that the credentials cannot access (403) are now excluded from the catalog during discovery; discovery fails only if the credentials cannot read any supported parent stream.
   * Added unit tests for discovery access checks.
 
 # 3.0.1

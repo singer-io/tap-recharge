@@ -76,6 +76,9 @@ class BaseStream:
         if self.parent:
             return True
 
+        if self.client is None:
+            raise ValueError("Recharge client is required to check stream access.")
+
         try:
             params = {**self.params, 'limit': 1}
             self.client.get(self.path, params=params)

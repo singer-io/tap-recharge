@@ -13,13 +13,15 @@ def _prune_inaccessible_children(schemas: dict, field_metadata: dict) -> None:
     Mutates schemas and field_metadata in place.
     """
     for name, stream_cls in list(STREAMS.items()):
-        if name in schemas and stream_cls.parent and stream_cls.parent not in schemas:
+        parent = getattr(stream_cls, "parent", None)
+        parent_id = getattr(parent, "tap_stream_id", parent)
+        if name in schemas and parent_id and parent_id not in schemas:
             LOGGER.warning(
                 "Stream '%s' excluded from catalog because its parent stream '%s' is not accessible.",
-                name, stream_cls.parent,
+                name, parent_id,
             )
-            schemas.pop(name)
-            field_metadata.pop(name)
+            schemas.pop(name, None)
+            field_metadata.pop(name, None)
 
 
 def _apply_access_checks(client, schemas: dict, field_metadata: dict) -> None:
@@ -60,11 +62,11 @@ def discover(client=None):
     """
     Constructs a singer Catalog object based on the schemas and metadata.
     Access to each stream is verified using the provided client and streams
-    the credentials cannot read are excluded from the returned catalog.
+    that the credentials cannot read are excluded from the returned catalog.
     """
     schemas, field_metadata = get_schemas()
 
-    if client:
+    if client is not None:
         _apply_access_checks(client, schemas, field_metadata)
 
     streams = []

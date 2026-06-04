@@ -48,6 +48,14 @@ class TestCheckAccess(unittest.TestCase):
         self.assertTrue(stream.check_access())
         mock_client.get.assert_not_called()
 
+    def test_check_access_raises_valueerror_without_client(self):
+        """check_access raises ValueError when called on a parent stream without a client."""
+        stream_cls = STREAMS['addresses']
+        stream = stream_cls(client=None)
+        with self.assertRaises(ValueError) as ctx:
+            stream.check_access()
+        self.assertIn("Recharge client is required", str(ctx.exception))
+
 
 class TestApplyAccessChecks(unittest.TestCase):
     """Tests for _apply_access_checks()"""
@@ -162,6 +170,25 @@ class TestPruneInaccessibleChildren(unittest.TestCase):
 
         self.assertIn('child_stream', schemas)
         self.assertIn('child_stream', field_metadata)
+
+    @patch('tap_recharge.discover.STREAMS')
+    def test_child_excluded_when_parent_is_class_reference(self, mock_streams):
+        """Child stream is removed when parent is a class with tap_stream_id not in schemas."""
+        mock_parent_cls = MagicMock()
+        mock_parent_cls.tap_stream_id = 'parent_stream'
+
+        mock_child_cls = MagicMock()
+        mock_child_cls.parent = mock_parent_cls
+
+        mock_streams.items.return_value = [('child_stream', mock_child_cls)]
+
+        schemas = {'child_stream': {}}
+        field_metadata = {'child_stream': []}
+
+        _prune_inaccessible_children(schemas, field_metadata)
+
+        self.assertNotIn('child_stream', schemas)
+        self.assertNotIn('child_stream', field_metadata)
 
 
 class TestDiscoverWithClient(unittest.TestCase):
