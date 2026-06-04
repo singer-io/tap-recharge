@@ -132,9 +132,13 @@ class RechargeBaseTest(unittest.TestCase):
         }
 
 
-    def expected_streams(self):
-        """A set of expected stream names"""
-        return set(self.expected_metadata().keys())
+    def expected_stream_names(self):
+        """The expected stream names and exclude forbidden streams."""
+        return {
+            stream_name
+            for stream_name, metadata in self.expected_metadata().items()
+            if not metadata.get(self.IS_FORBIDDEN_STREAM, False)
+        }
 
     def child_streams(self):
         """
