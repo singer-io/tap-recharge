@@ -77,7 +77,8 @@ class BaseStream:
             return True
 
         try:
-            self.client.get(self.path, params={'limit': 1})
+            params = {**self.params, 'limit': 1}
+            self.client.get(self.path, params=params)
             return True
         except RechargeForbiddenError:
             LOGGER.warning(
