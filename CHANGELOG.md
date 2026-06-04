@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+  * Streams the credentials cannot access (403) are now excluded from the catalog during discovery instead of raising an error.
+  * Added unit tests for discovery access checks.
+
 # 3.0.1
   * Bump requests to 2.33.0 for security updates [#53](https://github.com/singer-io/tap-recharge/pull/53)
 

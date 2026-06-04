@@ -9,7 +9,7 @@ from typing import Iterator
 import singer
 from singer import Transformer, utils, metrics, bookmarks
 
-from tap_recharge.client import RechargeClient
+from tap_recharge.client import RechargeClient, RechargeForbiddenError
 
 
 LOGGER = singer.get_logger()
@@ -64,8 +64,27 @@ class BaseStream:
     parent = None
     data_key = None
 
-    def __init__(self, client: RechargeClient):
+    def __init__(self, client: RechargeClient = None):
         self.client = client
+
+    def check_access(self) -> bool:
+        """
+        Verify that the API credentials have read access to this stream.
+        Returns True if accessible, False if a 403 Forbidden error is raised.
+        Child streams always return True (access is governed by the parent check).
+        """
+        if self.parent:
+            return True
+
+        try:
+            self.client.get(self.path, params={'limit': 1})
+            return True
+        except RechargeForbiddenError:
+            LOGGER.warning(
+                "Stream '%s' does not have read permission, excluding from catalog.",
+                self.tap_stream_id,
+            )
+            return False
 
     def get_records(
             self,
