@@ -1,7 +1,7 @@
 # Changelog
 
 ## 3.1.0
-  * Exclude Streams that the credentials cannot access (403) from the catalog during discovery; discovery fails only if the credentials cannot read any supported parent stream.[#55](https://github.com/singer-io/tap-recharge/pull/55)
+  * Exclude unauthorized (403) streams from discovery catalog [#55](https://github.com/singer-io/tap-recharge/pull/55)
 
 # 3.0.1
   * Bump requests to 2.33.0 for security updates [#53](https://github.com/singer-io/tap-recharge/pull/53)

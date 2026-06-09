@@ -73,7 +73,6 @@ class TestApplyAccessChecks(unittest.TestCase):
         mock_stream_cls.return_value = mock_stream_instance
 
         mock_streams.items.return_value = [('stream_a', mock_stream_cls), ('stream_b', mock_stream_cls)]
-        mock_streams.values.return_value = [mock_stream_cls, mock_stream_cls]
 
         schemas = {'stream_a': {}, 'stream_b': {}}
         field_metadata = {'stream_a': [], 'stream_b': []}
@@ -103,7 +102,6 @@ class TestApplyAccessChecks(unittest.TestCase):
         mock_stream_b_cls.return_value = mock_stream_b_instance
 
         mock_streams.items.return_value = [('stream_a', mock_stream_a_cls), ('stream_b', mock_stream_b_cls)]
-        mock_streams.values.return_value = [mock_stream_a_cls, mock_stream_b_cls]
 
         schemas = {'stream_a': {}, 'stream_b': {}}
         field_metadata = {'stream_a': [], 'stream_b': []}
@@ -127,7 +125,6 @@ class TestApplyAccessChecks(unittest.TestCase):
         mock_stream_cls.return_value = mock_stream_instance
 
         mock_streams.items.return_value = [('stream_a', mock_stream_cls), ('stream_b', mock_stream_cls)]
-        mock_streams.values.return_value = [mock_stream_cls, mock_stream_cls]
 
         schemas = {'stream_a': {}, 'stream_b': {}}
         field_metadata = {'stream_a': [], 'stream_b': []}
@@ -171,25 +168,6 @@ class TestPruneInaccessibleChildren(unittest.TestCase):
         self.assertIn('child_stream', schemas)
         self.assertIn('child_stream', field_metadata)
 
-    @patch('tap_recharge.discover.STREAMS')
-    def test_child_excluded_when_parent_is_class_reference(self, mock_streams):
-        """Child stream is removed when parent is a class with tap_stream_id not in schemas."""
-        mock_parent_cls = MagicMock()
-        mock_parent_cls.tap_stream_id = 'parent_stream'
-
-        mock_child_cls = MagicMock()
-        mock_child_cls.parent = mock_parent_cls
-
-        mock_streams.items.return_value = [('child_stream', mock_child_cls)]
-
-        schemas = {'child_stream': {}}
-        field_metadata = {'child_stream': []}
-
-        _prune_inaccessible_children(schemas, field_metadata)
-
-        self.assertNotIn('child_stream', schemas)
-        self.assertNotIn('child_stream', field_metadata)
-
 
 class TestDiscoverWithClient(unittest.TestCase):
     """Integration test for discover() with access checks."""
@@ -214,7 +192,3 @@ class TestDiscoverWithClient(unittest.TestCase):
 
         catalog = discover(client=None)
         mock_access_checks.assert_not_called()
-
-
-if __name__ == '__main__':
-    unittest.main()

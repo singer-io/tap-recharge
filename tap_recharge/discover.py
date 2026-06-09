@@ -13,12 +13,10 @@ def _prune_inaccessible_children(schemas: dict, field_metadata: dict) -> None:
     Mutates schemas and field_metadata in place.
     """
     for name, stream_cls in list(STREAMS.items()):
-        parent = getattr(stream_cls, "parent", None)
-        parent_id = getattr(parent, "tap_stream_id", parent)
-        if name in schemas and parent_id and parent_id not in schemas:
+        if name in schemas and stream_cls.parent and stream_cls.parent not in schemas:
             LOGGER.warning(
                 "Stream '%s' excluded from catalog because its parent stream '%s' is not accessible.",
-                name, parent_id,
+                name, stream_cls.parent,
             )
             schemas.pop(name, None)
             field_metadata.pop(name, None)
@@ -44,13 +42,13 @@ def _apply_access_checks(client, schemas: dict, field_metadata: dict) -> None:
 
     _prune_inaccessible_children(schemas, field_metadata)
 
+    if not schemas:
+        raise RechargeForbiddenError(
+            "HTTP-error-code: 403, Error: The account credentials supplied do not have 'read' access to any "
+            "of the streams supported by the tap. Data collection cannot be initiated due to lack of permissions."
+        )
+
     if inaccessible_streams:
-        total_parent_streams = len([s for s in STREAMS.values() if not s.parent])
-        if len(inaccessible_streams) == total_parent_streams:
-            raise RechargeForbiddenError(
-                "HTTP-error-code: 403, Error: The account credentials supplied do not have 'read' access to any "
-                "of the streams supported by the tap. Data collection cannot be initiated due to lack of permissions."
-            )
         LOGGER.warning(
             "The account credentials supplied do not have 'read' access to the following stream(s): %s. "
             "These streams have been excluded from the catalog.",
