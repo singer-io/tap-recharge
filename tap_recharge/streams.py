@@ -64,7 +64,7 @@ class BaseStream:
     parent = None
     data_key = None
 
-    def __init__(self, client: RechargeClient = None):
+    def __init__(self, client: RechargeClient):
         self.client = client
 
     def check_access(self) -> bool:
