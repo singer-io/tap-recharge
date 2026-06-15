@@ -83,10 +83,11 @@ class BaseStream:
             params = {**self.params, 'limit': 1}
             self.client.get(self.path, params=params)
             return True
-        except RechargeForbiddenError:
+        except RechargeForbiddenError as exc:
             LOGGER.warning(
-                "Stream '%s' does not have read permission, excluding from catalog.",
+                "Stream '%s' does not have read permission, excluding from catalog. Detail: %s",
                 self.tap_stream_id,
+                str(exc),
             )
             return False
 

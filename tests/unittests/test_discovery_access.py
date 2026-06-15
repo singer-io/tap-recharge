@@ -182,13 +182,3 @@ class TestDiscoverWithClient(unittest.TestCase):
 
         catalog = discover(mock_client)
         mock_access_checks.assert_called_once()
-
-    @patch('tap_recharge.discover._apply_access_checks')
-    @patch('tap_recharge.discover.get_schemas')
-    def test_discover_skips_access_checks_without_client(self, mock_get_schemas, mock_access_checks):
-        """discover() skips _apply_access_checks when client is None."""
-        mock_get_schemas.return_value = ({'addresses': {'type': 'object', 'properties': {}}},
-                                          {'addresses': []})
-
-        catalog = discover(client=None)
-        mock_access_checks.assert_not_called()

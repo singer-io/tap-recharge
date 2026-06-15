@@ -44,19 +44,17 @@ def _apply_access_checks(client, schemas: dict, field_metadata: dict) -> None:
 
     if not schemas:
         raise RechargeForbiddenError(
-            "HTTP-error-code: 403, Error: The account credentials supplied do not have 'read' access to any "
-            "of the streams supported by the tap. Data collection cannot be initiated due to lack of permissions."
+            "HTTP-error-code: 403, Error: Credentials lack read access to all supported streams."
         )
 
     if inaccessible_streams:
         LOGGER.warning(
-            "The account credentials supplied do not have 'read' access to the following stream(s): %s. "
-            "These streams have been excluded from the catalog.",
+            "These streams have been excluded due to 403 Forbidden: %s",
             ", ".join(inaccessible_streams),
         )
 
 
-def discover(client=None):
+def discover(client):
     """
     Constructs a singer Catalog object based on the schemas and metadata.
     Access to each stream is verified using the provided client and streams
@@ -64,8 +62,7 @@ def discover(client=None):
     """
     schemas, field_metadata = get_schemas()
 
-    if client is not None:
-        _apply_access_checks(client, schemas, field_metadata)
+    _apply_access_checks(client, schemas, field_metadata)
 
     streams = []
 
