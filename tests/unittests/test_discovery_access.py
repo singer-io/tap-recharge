@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 
 from tap_recharge.client import RechargeForbiddenError
-from tap_recharge.discover import discover, _apply_access_checks, _prune_inaccessible_children
+from tap_recharge.discover import discover, _apply_access_checks
 from tap_recharge.streams import STREAMS
 
 
@@ -33,28 +33,22 @@ class TestCheckAccess(unittest.TestCase):
         stream = stream_cls(client=mock_client)
         self.assertFalse(stream.check_access())
 
-    def test_check_access_child_stream_always_true(self):
-        """check_access returns True for child streams without making API call."""
+    def test_check_access_logs_warning_on_forbidden(self):
+        """check_access logs the stream id and error detail when a 403 is raised."""
         mock_client = MagicMock()
+        error_message = "HTTP-error-code: 403, Error: Forbidden"
+        mock_client.get.side_effect = RechargeForbiddenError(error_message)
 
-        # Create a mock child stream class with a parent
-        from tap_recharge.streams import BaseStream
-        class ChildStream(BaseStream):
-            tap_stream_id = 'child_test'
-            parent = 'addresses'
-            path = 'child'
-
-        stream = ChildStream(client=mock_client)
-        self.assertTrue(stream.check_access())
-        mock_client.get.assert_not_called()
-
-    def test_check_access_raises_valueerror_without_client(self):
-        """check_access raises ValueError when called on a parent stream without a client."""
         stream_cls = STREAMS['addresses']
-        stream = stream_cls(client=None)
-        with self.assertRaises(ValueError) as ctx:
+        stream = stream_cls(client=mock_client)
+
+        with self.assertLogs(level='WARNING') as log:
             stream.check_access()
-        self.assertIn("Recharge client is required", str(ctx.exception))
+
+        self.assertEqual(len(log.output), 1)
+        warning = log.output[0]
+        self.assertIn('addresses', warning)
+        self.assertIn(error_message, warning)
 
 
 class TestApplyAccessChecks(unittest.TestCase):
@@ -132,41 +126,6 @@ class TestApplyAccessChecks(unittest.TestCase):
         with self.assertRaises(RechargeForbiddenError):
             _apply_access_checks(mock_client, schemas, field_metadata)
 
-
-class TestPruneInaccessibleChildren(unittest.TestCase):
-    """Tests for _prune_inaccessible_children()"""
-
-    @patch('tap_recharge.discover.STREAMS')
-    def test_child_excluded_when_parent_missing(self, mock_streams):
-        """Child stream is removed when its parent is not in schemas."""
-        mock_child_cls = MagicMock()
-        mock_child_cls.parent = 'parent_stream'
-
-        mock_streams.items.return_value = [('child_stream', mock_child_cls)]
-
-        schemas = {'child_stream': {}}
-        field_metadata = {'child_stream': []}
-
-        _prune_inaccessible_children(schemas, field_metadata)
-
-        self.assertNotIn('child_stream', schemas)
-        self.assertNotIn('child_stream', field_metadata)
-
-    @patch('tap_recharge.discover.STREAMS')
-    def test_child_kept_when_parent_present(self, mock_streams):
-        """Child stream is kept when its parent is in schemas."""
-        mock_child_cls = MagicMock()
-        mock_child_cls.parent = 'parent_stream'
-
-        mock_streams.items.return_value = [('child_stream', mock_child_cls)]
-
-        schemas = {'parent_stream': {}, 'child_stream': {}}
-        field_metadata = {'parent_stream': [], 'child_stream': []}
-
-        _prune_inaccessible_children(schemas, field_metadata)
-
-        self.assertIn('child_stream', schemas)
-        self.assertIn('child_stream', field_metadata)
 
 
 class TestDiscoverWithClient(unittest.TestCase):
