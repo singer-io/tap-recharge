@@ -7,21 +7,6 @@ from tap_recharge.streams import STREAMS
 LOGGER = singer.get_logger()
 
 
-def _prune_inaccessible_children(schemas: dict, field_metadata: dict) -> None:
-    """
-    Remove child streams from the catalog whose parent stream was excluded.
-    Mutates schemas and field_metadata in place.
-    """
-    for name, stream_cls in list(STREAMS.items()):
-        if name in schemas and stream_cls.parent and stream_cls.parent not in schemas:
-            LOGGER.warning(
-                "Stream '%s' excluded from catalog because its parent stream '%s' is not accessible.",
-                name, stream_cls.parent,
-            )
-            schemas.pop(name, None)
-            field_metadata.pop(name, None)
-
-
 def _apply_access_checks(client, schemas: dict, field_metadata: dict) -> None:
     """
     Probe each parent stream for read access and remove inaccessible streams
@@ -39,8 +24,6 @@ def _apply_access_checks(client, schemas: dict, field_metadata: dict) -> None:
     for stream_name in inaccessible_streams:
         schemas.pop(stream_name, None)
         field_metadata.pop(stream_name, None)
-
-    _prune_inaccessible_children(schemas, field_metadata)
 
     if not schemas:
         raise RechargeForbiddenError(

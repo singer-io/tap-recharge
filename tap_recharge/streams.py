@@ -73,12 +73,6 @@ class BaseStream:
         Returns True if accessible, False if a 403 Forbidden error is raised.
         Child streams always return True (access is governed by the parent check).
         """
-        if self.parent:
-            return True
-
-        if self.client is None:
-            raise ValueError("Recharge client is required to check stream access.")
-
         try:
             params = {**self.params, 'limit': 1}
             self.client.get(self.path, params=params)
