@@ -100,12 +100,18 @@ class TestApplyAccessChecks(unittest.TestCase):
         schemas = {'stream_a': {}, 'stream_b': {}}
         field_metadata = {'stream_a': [], 'stream_b': []}
 
-        _apply_access_checks(mock_client, schemas, field_metadata)
+        with self.assertLogs(level='WARNING') as log:
+            _apply_access_checks(mock_client, schemas, field_metadata)
 
         self.assertIn('stream_a', schemas)
         self.assertNotIn('stream_b', schemas)
         self.assertIn('stream_a', field_metadata)
         self.assertNotIn('stream_b', field_metadata)
+        self.assertEqual(len(log.output), 1)
+        self.assertIn(
+            'These streams have been excluded due to HTTP-Error-Code:403 Forbidden: stream_b',
+            log.output[0],
+        )
 
     @patch('tap_recharge.discover.STREAMS')
     def test_no_streams_accessible_raises_error(self, mock_streams):
@@ -123,8 +129,13 @@ class TestApplyAccessChecks(unittest.TestCase):
         schemas = {'stream_a': {}, 'stream_b': {}}
         field_metadata = {'stream_a': [], 'stream_b': []}
 
-        with self.assertRaises(RechargeForbiddenError):
+        with self.assertRaises(RechargeForbiddenError) as ctx:
             _apply_access_checks(mock_client, schemas, field_metadata)
+
+        self.assertEqual(
+            str(ctx.exception),
+            'No streams are accessible. Ensure the credentials have read permission for at least one stream.',
+        )
 
 
 
